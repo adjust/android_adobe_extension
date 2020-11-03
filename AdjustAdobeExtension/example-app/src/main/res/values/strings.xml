@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Adjust Adobe Extension Example App</string>
+    <string name="track_simple_event">Track Simple Event</string>
+    <string name="track_revenue_event">Track Revenue Event</string>
+</resources>
