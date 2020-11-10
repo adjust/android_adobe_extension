@@ -31,9 +31,15 @@ public class AdjustAdobeExtension {
      * @param config extension config to initialize Adjust Sdk
      */
     public static void registerExtension(AdjustAdobeExtensionConfig config) {
-        if (!isValidConfig(config)) {
-            MobileCore.log(LoggingMode.ERROR, LOG_TAG,
-                           "Failed to register AdjustAdobeExtension, invalid config");
+        if (config == null) {
+            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
+                    "AdjustAdobeExtensionConfig is null");
+            return;
+        }
+
+        if (config.getEnvironment() == null) {
+            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
+                    "AdjustAdobeExtensionConfig environment is null");
             return;
         }
 
@@ -59,30 +65,4 @@ public class AdjustAdobeExtension {
     public static AdjustAdobeExtensionConfig getAdjustAdobeExtensionConfig() {
         return adjustAdobeExtensionConfig;
     }
-
-    // internal methods
-    private static boolean isValidConfig(AdjustAdobeExtensionConfig config) {
-        if (config == null) {
-            MobileCore.log(LoggingMode.DEBUG, LOG_TAG, "AdjustAdobeExtensionConfig is null");
-            return false;
-        }
-
-        if (config.getEnvironment() == null) {
-            MobileCore.log(LoggingMode.DEBUG, LOG_TAG, "AdjustAdobeExtensionConfig environment is null");
-            return false;
-        }
-
-        if (!config.getEnvironment().equals(AdjustAdobeExtensionConfig.ENVIRONMENT_PRODUCTION) &&
-            !config.getEnvironment().equals(AdjustAdobeExtensionConfig.ENVIRONMENT_SANDBOX)) {
-
-            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
-                           "AdjustAdobeExtensionConfig environment should be production or sandbox");
-            return false;
-        }
-
-        return true;
-    }
-
-
-
 }
