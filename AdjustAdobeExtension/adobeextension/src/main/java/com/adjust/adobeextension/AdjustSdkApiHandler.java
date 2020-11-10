@@ -159,7 +159,20 @@ class AdjustSdkApiHandler {
 
         AdjustConfig adjustConfig = new AdjustConfig(appContext, appToken, environment);
 
-        adjustConfig.setLogLevel(getAdjustLogLevel());
+        switch (MobileCore.getLogLevel()) {
+            case ERROR:
+                adjustConfig.setLogLevel(LogLevel.ERROR);
+                break;
+            case WARNING:
+                adjustConfig.setLogLevel(LogLevel.WARN);
+                break;
+            case DEBUG:
+                adjustConfig.setLogLevel(LogLevel.DEBUG);
+                break;
+            case VERBOSE:
+                adjustConfig.setLogLevel(LogLevel.VERBOSE);
+                break;
+        }
 
         adjustConfig.setOnAttributionChangedListener(new OnAttributionChangedListener() {
             @Override
@@ -191,25 +204,6 @@ class AdjustSdkApiHandler {
                 adjustAdobeExtensionConfig.getOnDeeplinkResponseListener());
 
         return adjustConfig;
-    }
-
-    /**
-     *  Method to map Adobe Extension log level to Adjust Sdk log level
-     */
-    private LogLevel getAdjustLogLevel() {
-        switch (MobileCore.getLogLevel()) {
-            case ERROR:
-                return LogLevel.ERROR;
-
-            case WARNING:
-                return LogLevel.WARN;
-
-            case DEBUG:
-                return LogLevel.DEBUG;
-
-            default:
-                return LogLevel.VERBOSE;
-        }
     }
 
     private static final class AdjustLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
