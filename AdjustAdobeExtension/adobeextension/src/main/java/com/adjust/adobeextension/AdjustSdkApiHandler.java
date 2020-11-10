@@ -187,18 +187,6 @@ class AdjustSdkApiHandler {
         adjustConfig.setOnDeeplinkResponseListener(
                 adjustAdobeExtensionConfig.getOnDeeplinkResponseListener());
 
-        adjustConfig.setOnEventTrackingFailedListener(
-                adjustAdobeExtensionConfig.getOnEventTrackingFailedListener());
-
-        adjustConfig.setOnEventTrackingSucceededListener(
-                adjustAdobeExtensionConfig.getOnEventTrackingSucceededListener());
-
-        adjustConfig.setOnSessionTrackingFailedListener(
-                adjustAdobeExtensionConfig.getOnSessionTrackingFailedListener());
-
-        adjustConfig.setOnSessionTrackingSucceededListener(
-                adjustAdobeExtensionConfig.getOnSessionTrackingSucceededListener());
-
         return adjustConfig;
     }
 

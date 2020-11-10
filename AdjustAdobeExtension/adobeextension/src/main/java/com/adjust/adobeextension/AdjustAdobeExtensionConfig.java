@@ -35,26 +35,6 @@ public class AdjustAdobeExtensionConfig {
     private OnAttributionChangedListener onAttributionChangedListener;
 
     /**
-     * Callback to listen when event tracking succeeded.
-     */
-    private OnEventTrackingSucceededListener onEventTrackingSucceededListener;
-
-    /**
-     * Callback to listen when event tracking failed.
-     */
-    private OnEventTrackingFailedListener onEventTrackingFailedListener;
-
-    /**
-     * Callback to listen when session tracking succeeded.
-     */
-    private OnSessionTrackingSucceededListener onSessionTrackingSucceededListener;
-
-    /**
-     * Callback to listen when session tracking failed.
-     */
-    private OnSessionTrackingFailedListener onSessionTrackingFailedListener;
-
-    /**
      * Callback to listen for deeplink response.
      */
     private OnDeeplinkResponseListener onDeeplinkResponseListener;
@@ -69,36 +49,10 @@ public class AdjustAdobeExtensionConfig {
     /**
      * Method to set callback for attribution change.
      */
-    public void setOnAttributionChangedListener(OnAttributionChangedListener onAttributionChangedListener) {
+    public void setOnAttributionChangedListener(
+            OnAttributionChangedListener onAttributionChangedListener)
+    {
         this.onAttributionChangedListener = onAttributionChangedListener;
-    }
-
-    /**
-     * Method to set callback for event tracking success.
-     */
-    public void setOnEventTrackingSucceededListener(OnEventTrackingSucceededListener onEventTrackingSucceededListener) {
-        this.onEventTrackingSucceededListener = onEventTrackingSucceededListener;
-    }
-
-    /**
-     * Method to set callback for event tracking failure.
-     */
-    public void setOnEventTrackingFailedListener(OnEventTrackingFailedListener onEventTrackingFailedListener) {
-        this.onEventTrackingFailedListener = onEventTrackingFailedListener;
-    }
-
-    /**
-     * Method to set callback for session tracking success.
-     */
-    public void setOnSessionTrackingSucceededListener(OnSessionTrackingSucceededListener onSessionTrackingSucceededListener) {
-        this.onSessionTrackingSucceededListener = onSessionTrackingSucceededListener;
-    }
-
-    /**
-     * Method to set callback for session tracking failure.
-     */
-    public void setOnSessionTrackingFailedListener(OnSessionTrackingFailedListener onSessionTrackingFailedListener) {
-        this.onSessionTrackingFailedListener = onSessionTrackingFailedListener;
     }
 
     /**
@@ -120,34 +74,6 @@ public class AdjustAdobeExtensionConfig {
      */
     public OnAttributionChangedListener getOnAttributionChangedListener() {
         return onAttributionChangedListener;
-    }
-
-    /**
-     * Method to get event tracking success callback listener
-     */
-    public OnEventTrackingSucceededListener getOnEventTrackingSucceededListener() {
-        return onEventTrackingSucceededListener;
-    }
-
-    /**
-     * Method to get event tracking failure callback listener
-     */
-    public OnEventTrackingFailedListener getOnEventTrackingFailedListener() {
-        return onEventTrackingFailedListener;
-    }
-
-    /**
-     * Method to get session tracking success callback listener
-     */
-    public OnSessionTrackingSucceededListener getOnSessionTrackingSucceededListener() {
-        return onSessionTrackingSucceededListener;
-    }
-
-    /**
-     * Method to get session tracking failure callback listener
-     */
-    public OnSessionTrackingFailedListener getOnSessionTrackingFailedListener() {
-        return onSessionTrackingFailedListener;
     }
 
     /**
