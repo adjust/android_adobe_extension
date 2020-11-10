@@ -44,7 +44,11 @@ class AdjustAdobeExtensionListener
         }
 
         if (EVENT_TYPE_ADOBE_HUB.equalsIgnoreCase(eventType)) {
-            if (ADOBE_MODULE_CONFIGURATION.equalsIgnoreCase((String)eventData.get(ADOBE_SHARED_STATE_OWNER))) {
+            Object adobeSharedStateOwner = eventData.get(ADOBE_SHARED_STATE_OWNER);
+
+            if (adobeSharedStateOwner instanceof String
+                    && ADOBE_MODULE_CONFIGURATION.equalsIgnoreCase((String)adobeSharedStateOwner))
+            {
                 adjustAdobeExtension.handleConfigurationEvent(event);
             }
 

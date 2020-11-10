@@ -53,6 +53,8 @@ class AdjustSdkApiHandler {
      */
     protected void initSdk(final String appToken, final boolean shouldTrackAttribution) {
         if (sdkInitialised) {
+            MobileCore.log(LoggingMode.WARNING, LOG_TAG,
+                    "Cannot initialise SDK, already initialised");
             return;
         }
 
@@ -63,21 +65,21 @@ class AdjustSdkApiHandler {
             return;
         }
 
-        if (appToken == null || appToken.isEmpty()) {
+        if (appToken == null) {
             MobileCore.log(LoggingMode.ERROR, LOG_TAG,
                            "Cannot initialise SDK, appToken is null or empty");
         }
 
-        if (AdjustAdobeExtension.getAdjustAdobeExtensionConfig() == null) {
+        AdjustAdobeExtensionConfig adjustAdobeExtensionConfig =
+                AdjustAdobeExtension.getAdjustAdobeExtensionConfig();
+        if (adjustAdobeExtensionConfig == null) {
             MobileCore.log(LoggingMode.ERROR, LOG_TAG,
                            "Cannot initialise SDK, adjust extension config is null");
         }
 
-        AdjustConfig
-                adjustConfig = getAdjustConfig(application.getApplicationContext(),
-                                               appToken,
-                                               shouldTrackAttribution,
-                                               AdjustAdobeExtension.getAdjustAdobeExtensionConfig());
+        AdjustConfig adjustConfig = getAdjustConfig(application.getApplicationContext(),
+                appToken, shouldTrackAttribution, adjustAdobeExtensionConfig);
+
         Adjust.onCreate(adjustConfig);
 
         // there might be a moment when activity is already resumed before Sdk initialization
@@ -97,7 +99,7 @@ class AdjustSdkApiHandler {
             return;
         }
 
-        String eventToken = (String)contextData.get(ADJUST_EVENT_TOKEN_KEY);
+        String eventToken = contextData.get(ADJUST_EVENT_TOKEN_KEY);
         if (eventToken == null) {
             return;
         }
@@ -164,8 +166,7 @@ class AdjustSdkApiHandler {
             public
             void onAttributionChanged(AdjustAttribution attribution) {
                 if (shouldTrackAttribution) {
-                    Map<String, String>
-                            contextData = new HashMap<String, String>();
+                    Map<String, String> contextData = new HashMap<String, String>();
                     contextData.put("adjust.adgroup" , attribution.adgroup);
                     contextData.put("adjust.adid" , attribution.adid);
                     contextData.put("adjust.campaign" , attribution.campaign);
@@ -178,8 +179,10 @@ class AdjustSdkApiHandler {
                     MobileCore.trackAction("Adjust Attribution Data", contextData);
                 }
 
-                if (adjustAdobeExtensionConfig.getOnAttributionChangedListener() != null) {
-                    adjustAdobeExtensionConfig.getOnAttributionChangedListener().onAttributionChanged(attribution);
+                OnAttributionChangedListener onAttributionChangedListener =
+                        adjustAdobeExtensionConfig.getOnAttributionChangedListener();
+                if (onAttributionChangedListener != null) {
+                    onAttributionChangedListener.onAttributionChanged(attribution);
                 }
             }
         });

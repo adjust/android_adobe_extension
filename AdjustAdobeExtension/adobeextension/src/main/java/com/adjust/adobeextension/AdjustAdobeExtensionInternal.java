@@ -61,7 +61,10 @@ class AdjustAdobeExtensionInternal extends Extension {
         super.onUnexpectedError(extensionUnexpectedError);
 
         MobileCore.log(LoggingMode.ERROR, LOG_TAG,
-                       "ExtensionUnexpectedError : " + extensionUnexpectedError.getMessage());
+                       "ExtensionUnexpectedError"
+                               + extensionUnexpectedError != null ?
+                                    ": " + extensionUnexpectedError.getMessage()
+                                    : " with null error");
     }
 
     protected void handleConfigurationEvent(final Event event) {
@@ -141,17 +144,19 @@ class AdjustAdobeExtensionInternal extends Extension {
             return;
         }
 
-        if (!sharedEventState.containsKey(ADJUST_APP_TOKEN_KEY) ||
-            !sharedEventState.containsKey(ADJUST_TRACK_ATTRIBUTION_KEY)) {
+        Object appTokenObject = sharedEventState.get(ADJUST_APP_TOKEN_KEY);
+        Object shouldtrackAttributionObject = sharedEventState.get(ADJUST_TRACK_ATTRIBUTION_KEY);
+
+        if (!(appTokenObject instanceof String)
+                || !(shouldtrackAttributionObject instanceof Boolean))
+        {
             return;
         }
 
-        String appToken = (String)sharedEventState.get(ADJUST_APP_TOKEN_KEY);
-        Boolean trackAttributionObject = (Boolean)sharedEventState.get(ADJUST_TRACK_ATTRIBUTION_KEY);
+        String appToken = (String)appTokenObject;
+        Boolean shouldtrackAttribution = (Boolean)shouldtrackAttributionObject;
 
-        boolean shouldTrackAttribution = trackAttributionObject != null && trackAttributionObject;
-
-        adjustSdkApiHandler.initSdk(appToken, shouldTrackAttribution);
+        adjustSdkApiHandler.initSdk(appToken, shouldtrackAttribution.booleanValue());
 
         // process events arrived before initialisation
         processQueuedEvents();
@@ -177,22 +182,20 @@ class AdjustAdobeExtensionInternal extends Extension {
         }
 
         while (!eventQueue.isEmpty()) {
-            Event event = eventQueue.peek();
+            Event event = eventQueue.poll();
 
             if (event != null) {
                 Map<String, Object> eventData = event.getEventData();
-                Object contextDataObject = eventData.get(EVENT_CONTEXT_DATA_KEY);
-                if ((contextDataObject instanceof Map)) {
-                    Map<String, String> contextData = (Map<String, String>)contextDataObject;
-
-                    adjustSdkApiHandler.trackEvent(contextData);
+                if (eventData == null) {
+                    continue;
                 }
-            }
+                Object contextDataObject = eventData.get(EVENT_CONTEXT_DATA_KEY);
+                if (!(contextDataObject instanceof Map)) {
+                    continue;
+                }
+                Map<String, String> contextData = (Map<String, String>)contextDataObject;
 
-            eventQueue.poll();
-        }
-    }
-
+                adjustSdkApiHandler.trackEvent(contextData);
             }
         }
     }

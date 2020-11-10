@@ -43,15 +43,17 @@ public class AdjustAdobeExtension {
             return;
         }
 
-        ExtensionErrorCallback<ExtensionError>
-                errorCallback = new ExtensionErrorCallback<ExtensionError>() {
+        ExtensionErrorCallback<ExtensionError> errorCallback =
+                new ExtensionErrorCallback<ExtensionError>() {
             @Override
+
             public void error(final ExtensionError extensionError) {
                 MobileCore.log(LoggingMode.ERROR, LOG_TAG,
-                               "Failed to register AdjustAdobeExtension, error : " +
-                               extensionError.getErrorName());
-            }
-        };
+                        "Failed to register AdjustAdobeExtension" +
+                                extensionError != null ?
+                                    ", error" + extensionError.getErrorName()
+                                    : " without error");
+            }};
 
         if (MobileCore.registerExtension(AdjustAdobeExtensionInternal.class, errorCallback)) {
             adjustAdobeExtensionConfig = config;
