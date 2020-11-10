@@ -35,7 +35,7 @@ This is the Android Adobe Mobile Extension of Adjust™. You can read more about
 
 ### <a id="qs-example-app"></a>Example app
 
-There is an Android example app inside the [example-app][example-java] directory. You can open the Android project to see the example on how the Adjust Adobe Extension can be integrated.
+There is an Android example app inside the [example-app][example-app] directory. You can open the Android project to see the example on how the Adjust Adobe Extension can be integrated.
 
 ### <a id="qs-getting-started"></a>Getting started
 
@@ -354,7 +354,7 @@ And both event and session failed objects also contain:
 [dashboard]:  http://adjust.com
 [adjust.com]: http://adjust.com
 
-[example-java]:       AdjustAdobeExtension/example-app-java
+[example-app]:       AdjustAdobeExtension/example-app
 
 [maven]:                          http://maven.org
 [google-ad-id]:                   https://support.google.com/googleplay/android-developer/answer/6048248?hl=en
