@@ -32,8 +32,7 @@ import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
  */
 class AdjustAdobeExtensionInternal extends Extension {
     private final ConcurrentLinkedQueue<Event> eventQueue;
-    private final Object executorLock = new Object();
-    private ExecutorService executorService;
+    private final ExecutorService executorService;
     private final AdjustSdkApiHandler adjustSdkApiHandler;
 
     protected AdjustAdobeExtensionInternal(final ExtensionApi extensionApi) {
@@ -41,6 +40,7 @@ class AdjustAdobeExtensionInternal extends Extension {
 
         eventQueue = new ConcurrentLinkedQueue<>();
         adjustSdkApiHandler = new AdjustSdkApiHandler();
+        executorService = Executors.newSingleThreadExecutor();
 
         registerListenerForConfigurationEvent(extensionApi);
         registerListenerForGenericTrackEvent(extensionApi);
@@ -65,7 +65,7 @@ class AdjustAdobeExtensionInternal extends Extension {
     }
 
     protected void handleConfigurationEvent(final Event event) {
-        getExecutorService().execute(new Runnable() {
+        executorService.execute(new Runnable() {
             @Override
             public void run() {
                 handleConfigurationEventAsync(event);
@@ -74,7 +74,7 @@ class AdjustAdobeExtensionInternal extends Extension {
     }
 
     protected void handleGenericTrackEvent(final Event event) {
-        getExecutorService().execute(new Runnable() {
+        executorService.execute(new Runnable() {
             @Override
             public void run() {
                 handleGenericTrackEventAsync(event);
@@ -193,14 +193,7 @@ class AdjustAdobeExtensionInternal extends Extension {
         }
     }
 
-    private ExecutorService getExecutorService() {
-        synchronized (executorLock) {
-            if (executorService == null) {
-                executorService = Executors.newSingleThreadExecutor();
             }
-
-            return executorService;
         }
     }
-
 }
