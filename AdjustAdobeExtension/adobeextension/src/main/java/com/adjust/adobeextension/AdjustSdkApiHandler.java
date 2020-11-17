@@ -180,16 +180,23 @@ class AdjustSdkApiHandler {
             void onAttributionChanged(AdjustAttribution attribution) {
                 if (shouldTrackAttribution) {
                     Map<String, String> contextData = new HashMap<String, String>();
-                    contextData.put("adjust.adgroup" , attribution.adgroup);
-                    contextData.put("adjust.adid" , attribution.adid);
-                    contextData.put("adjust.campaign" , attribution.campaign);
-                    contextData.put("adjust.clickLabel" , attribution.clickLabel);
-                    contextData.put("adjust.creative" , attribution.creative);
-                    contextData.put("adjust.network" , attribution.network);
-                    contextData.put("adjust.trackerName" , attribution.trackerName);
-                    contextData.put("adjust.trackerToken" , attribution.trackerToken);
+                    if (attribution.network != null) {
+                        contextData.put("Adjust Network" , attribution.network);
+                    }
 
-                    MobileCore.trackAction("Adjust Attribution Data", contextData);
+                    if (attribution.campaign != null) {
+                        contextData.put("Adjust Campaign" , attribution.campaign);
+                    }
+
+                    if (attribution.adgroup != null) {
+                        contextData.put("Adjust AdGroup" , attribution.adgroup);
+                    }
+
+                    if (attribution.creative != null) {
+                        contextData.put("Adjust Creative" , attribution.creative);
+                    }
+
+                    MobileCore.trackAction("Adjust Campaign Data Received", contextData);
                 }
 
                 OnAttributionChangedListener onAttributionChangedListener =
