@@ -17,6 +17,7 @@ This is the Android Adobe Mobile Extension of Adjust™. You can read more about
    * [Integrate the Adjust SDK Extension into your app](#qs-integrate-extension)
       * [Basic setup](#qs-basic-setup)
       * [Session tracking](#qs-session-tracking)
+      * [Attribution](#qs-attribution)
       * [Adjust logging](#qs-adjust-logging)
       * [Build your app](#qs-build-the-app)
 
@@ -212,6 +213,15 @@ public class GlobalApplication extends Application {
 
 **Note**: This step is **very important**. Please **make sure that you implement this step in your app**. Completing this step ensures that the Adjust SDK can properly track sessions in your app.
 
+### <a id="qs-attribution"></a>Attribution
+
+The option to share attribution data with Adobe is in the Launch dashboard under the extensions configuration and is on by default. Adjust tracks the action name `Adjust Campaign Data Received` with the following attribution information from Adjust:
+
+* `Adjust Network`
+* `Adjust Campaign`
+* `Adjust AdGroup`
+* `Adjust Creative`
+
 ### <a id="qs-adjust-logging"></a>Adjust logging
 
 You can increase or decrease the amount of logs that you see during testing by calling `setLogLevel` on Adobe Mobile Core instance with one of the following parameters:
@@ -281,16 +291,7 @@ config.setOnAttributionChangedListener(new OnAttributionChangedListener() {
 AdjustAdobeExtension.registerExtension(config);
 ```
 
-The listener function is called after the SDK receives the final attribution data. Within the listener function, you'll have access to the `attribution` parameter. Here is a quick summary of its properties:
-
-- `trackerToken` the tracker token string of the current attribution.
-- `trackerName` the tracker name string of the current attribution.
-- `network` the network grouping level string of the current attribution.
-- `campaign` the campaign grouping level string of the current attribution.
-- `adgroup` the ad group grouping level string of the current attribution.
-- `creative` the creative grouping level string of the current attribution.
-- `clickLabel` the click label string of the current attribution.
-- `adid` the Adjust device identifier string.
+The listener function is called after the SDK receives the final attribution data. Within the listener function, you'll have access to the `attribution` parameter. 
 
 
 [dashboard]:  http://adjust.com
