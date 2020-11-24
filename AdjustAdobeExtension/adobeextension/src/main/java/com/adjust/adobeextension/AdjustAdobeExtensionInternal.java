@@ -23,6 +23,7 @@ import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_SOUR
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_TYPE_ADOBE_GENERIC_TRACK;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_TYPE_ADOBE_HUB;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EXTENSION_NAME;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EXTENSION_VERSION;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
 
 /**
@@ -53,7 +54,7 @@ class AdjustAdobeExtensionInternal extends Extension {
 
     @Override
     protected String getVersion() {
-        return adjustSdkApiHandler.getVersion();
+        return String.format("%s@%s", EXTENSION_VERSION, adjustSdkApiHandler.getVersion());
     }
 
     @Override

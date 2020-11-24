@@ -4,6 +4,7 @@ class AdjustAdobeExtensionConstants {
 
     static final String LOG_TAG = "Adjust";
     static final String EXTENSION_NAME = "com.adjust.adobeextension";
+    static final String EXTENSION_VERSION = "adobe_ext1.0.0";
 
     static final String EVENT_TYPE_ADOBE_HUB = "com.adobe.eventType.hub";
     static final String EVENT_TYPE_ADOBE_GENERIC_TRACK = "com.adobe.eventType.generic.track";
