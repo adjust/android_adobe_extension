@@ -2,7 +2,7 @@ package com.adjust.adobeextension;
 
 class AdjustAdobeExtensionConstants {
 
-    static final String LOG_TAG = "Adjust";
+    static final String LOG_TAG = "AdjustAdobeExtension";
     static final String EXTENSION_NAME = "com.adjust.adobeextension";
     static final String EXTENSION_VERSION = "adobe_ext1.0.0";
 

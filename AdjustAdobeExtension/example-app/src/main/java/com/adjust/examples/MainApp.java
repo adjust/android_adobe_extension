@@ -33,7 +33,6 @@ public class MainApp extends Application {
         super.onCreate();
 
         // set application object
-        // important for activity lifecycle detection
         MobileCore.setApplication(this);
 
         // set log level

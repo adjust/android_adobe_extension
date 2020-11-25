@@ -40,7 +40,7 @@ class AdjustAdobeExtensionInternal extends Extension {
         super(extensionApi);
 
         eventQueue = new ConcurrentLinkedQueue<>();
-        adjustSdkApiHandler = new AdjustSdkApiHandler();
+        adjustSdkApiHandler = AdjustSdkApiHandler.getInstance();
         executorService = Executors.newSingleThreadExecutor();
 
         registerListenerForConfigurationEvent(extensionApi);

@@ -1,5 +1,6 @@
 package com.adjust.adobeextension;
 
+import com.adjust.sdk.AdjustConfig;
 import com.adjust.sdk.OnAttributionChangedListener;
 import com.adjust.sdk.OnDeeplinkResponseListener;
 import com.adjust.sdk.OnEventTrackingFailedListener;
@@ -17,12 +18,12 @@ public class AdjustAdobeExtensionConfig {
     /**
      * Environment when sdk to send data for testing.
      */
-    public static final String ENVIRONMENT_SANDBOX = "sandbox";
+    public static final String ENVIRONMENT_SANDBOX = AdjustConfig.ENVIRONMENT_SANDBOX;
 
     /**
      * Environment when sdk to send data while in production.
      */
-    public static final String ENVIRONMENT_PRODUCTION = "production";
+    public static final String ENVIRONMENT_PRODUCTION = AdjustConfig.ENVIRONMENT_PRODUCTION;
 
     /**
      * Environment where sdk should send data to.

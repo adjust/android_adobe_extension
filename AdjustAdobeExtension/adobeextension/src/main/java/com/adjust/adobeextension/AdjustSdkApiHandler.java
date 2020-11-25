@@ -30,21 +30,36 @@ import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
 class AdjustSdkApiHandler {
 
     /**
+     * Singleton instance of AdjustSdkApiHandler
+     */
+    private static volatile AdjustSdkApiHandler instance = null;
+
+    /**
      * Flag to indicate if Adjust Sdk has been initialized yet
      */
-    private static boolean sdkInitialised;
+    private static boolean sdkInitialised = false;
 
     /**
      * Toggle flag to indicate whether Android Activity has been resumed or paused
      */
-    private static boolean activityResumed;
+    private static boolean activityResumed = false;
 
-    public AdjustSdkApiHandler() {
-        sdkInitialised = false;
-        activityResumed = false;
+    /**
+     * Application instance
+     */
+    private static Application application;
 
-        // register to activity life cycle callbacks, to keep track of Activity state
-        registerActivityLifecycleCallbacks();
+    private AdjustSdkApiHandler() {}
+
+    protected static AdjustSdkApiHandler getInstance() {
+        if (instance == null) {
+            synchronized (AdjustSdkApiHandler.class) {
+                if (instance == null) {
+                    instance = new AdjustSdkApiHandler();
+                }
+            }
+        }
+        return instance;
     }
 
     /**
@@ -97,11 +112,15 @@ class AdjustSdkApiHandler {
      */
     protected void trackEvent(final Map<String, String> contextData) {
         if (contextData == null) {
+            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
+                           "Cannot track event, contextData is null");
             return;
         }
 
         String eventToken = contextData.get(ADJUST_EVENT_TOKEN_KEY);
         if (eventToken == null) {
+            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
+                           "Cannot track event, eventToken is null");
             return;
         }
 
@@ -137,12 +156,40 @@ class AdjustSdkApiHandler {
         return Adjust.getSdkVersion();
     }
 
-    // internal methods
-    private void registerActivityLifecycleCallbacks() {
-        Application application = MobileCore.getApplication();
+    /**
+     * This registers AdjustLifecycleCallbacks to activity lifecycle callbacks
+     * It allows tracking of activity lifecycle states
+     */
+    protected boolean registerActivityLifecycleCallbacks(final Context context) {
         if (application != null) {
-            application.registerActivityLifecycleCallbacks(new AdjustLifecycleCallbacks());
+            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
+                           "Cannot register activity lifecycle callbacks more than once");
+            return false;
         }
+
+        if (context == null) {
+            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
+                           "Cannot register activity lifecycle callbacks without context");
+            return false;
+        }
+
+        final Context applicationContext = context.getApplicationContext();
+
+        if (!(applicationContext instanceof Application)) {
+            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
+                           "Cannot register activity lifecycle callbacks "
+                           + "without application context as Application");
+            return false;
+        }
+
+        MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
+                       "Registering activity lifecycle callbacks");
+
+
+        application = (Application) applicationContext;
+        application.registerActivityLifecycleCallbacks(new AdjustLifecycleCallbacks());
+
+        return true;
     }
 
     /**
@@ -214,7 +261,9 @@ class AdjustSdkApiHandler {
         return adjustConfig;
     }
 
-    private static final class AdjustLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
+    private static final class AdjustLifecycleCallbacks
+            implements Application.ActivityLifecycleCallbacks {
+
         @Override
         public void onActivityResumed(Activity activity) {
             activityResumed = true;
