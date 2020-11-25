@@ -9,6 +9,7 @@ import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAttribution;
 import com.adjust.sdk.AdjustConfig;
 import com.adjust.sdk.AdjustEvent;
+import com.adjust.sdk.Constants;
 import com.adjust.sdk.LogLevel;
 import com.adjust.sdk.OnAttributionChangedListener;
 import com.adobe.marketing.mobile.LoggingMode;
@@ -79,7 +80,7 @@ class AdjustSdkApiHandler {
 
         AdjustConfig adjustConfig = getAdjustConfig(application.getApplicationContext(),
                 appToken, shouldTrackAttribution, adjustAdobeExtensionConfig);
-
+        adjustConfig.setSdkPrefix(AdjustAdobeExtensionConstants.EXTENSION_VERSION);
         Adjust.onCreate(adjustConfig);
 
         // there might be a moment when activity is already resumed before Sdk initialization
