@@ -146,18 +146,18 @@ class AdjustAdobeExtensionInternal extends Extension {
         }
 
         Object appTokenObject = sharedEventState.get(ADJUST_APP_TOKEN_KEY);
-        Object shouldtrackAttributionObject = sharedEventState.get(ADJUST_TRACK_ATTRIBUTION_KEY);
+        Object shouldTrackAttributionObject = sharedEventState.get(ADJUST_TRACK_ATTRIBUTION_KEY);
 
         if (!(appTokenObject instanceof String)
-                || !(shouldtrackAttributionObject instanceof Boolean))
+                || !(shouldTrackAttributionObject instanceof Boolean))
         {
             return;
         }
 
         String appToken = (String)appTokenObject;
-        Boolean shouldtrackAttribution = (Boolean)shouldtrackAttributionObject;
+        Boolean shouldTrackAttribution = (Boolean)shouldTrackAttributionObject;
 
-        adjustSdkApiHandler.initSdk(appToken, shouldtrackAttribution.booleanValue());
+        adjustSdkApiHandler.initSdk(appToken, shouldTrackAttribution.booleanValue());
 
         // process events arrived before initialisation
         processQueuedEvents();
