@@ -57,9 +57,6 @@ public class AdjustAdobeExtension {
 
         if (MobileCore.registerExtension(AdjustAdobeExtensionInternal.class, errorCallback)) {
             adjustAdobeExtensionConfig = config;
-
-            AdjustSdkApiHandler.getInstance().
-                    registerActivityLifecycleCallbacks(MobileCore.getApplication());
         }
     }
 

@@ -5,7 +5,7 @@
     <application>
         <provider
             android:name="com.adjust.adobeextension.ActivityLifecycleProvider"
-            android:authorities="${applicationId}.adjust-extension-lifecycle-provider"
+            android:authorities="${applicationId}.adjust-sdk-adobe-extension-lifecycle-provider"
             android:exported="false" />
     </application>
 

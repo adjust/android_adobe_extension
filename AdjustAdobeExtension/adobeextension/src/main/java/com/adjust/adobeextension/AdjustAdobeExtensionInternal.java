@@ -142,6 +142,9 @@ class AdjustAdobeExtensionInternal extends Extension {
                 errorCallback);
 
         if (sharedEventState == null) {
+            MobileCore.log(LoggingMode.ERROR, LOG_TAG,
+                           "Failed to handle configuration event, "
+                           + "sharedEventState is null");
             return;
         }
 
@@ -151,6 +154,9 @@ class AdjustAdobeExtensionInternal extends Extension {
         if (!(appTokenObject instanceof String)
                 || !(shouldTrackAttributionObject instanceof Boolean))
         {
+            MobileCore.log(LoggingMode.ERROR, LOG_TAG,
+                           "Failed to handle configuration event, "
+                           + "appToken or shouldTrackAttribution are not instance of correct type");
             return;
         }
 
