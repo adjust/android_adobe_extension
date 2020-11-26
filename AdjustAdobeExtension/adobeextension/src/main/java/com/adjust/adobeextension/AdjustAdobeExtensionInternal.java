@@ -31,7 +31,9 @@ import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
  * It registers and handles configuration & generic track event.
  * It delegates calls to Adjust Sdk using Api handler
  */
-class AdjustAdobeExtensionInternal extends Extension {
+class AdjustAdobeExtensionInternal
+        extends Extension
+{
     private final ConcurrentLinkedQueue<Event> eventQueue;
     private final ExecutorService executorService;
     private final AdjustSdkApiHandler adjustSdkApiHandler;
@@ -58,7 +60,7 @@ class AdjustAdobeExtensionInternal extends Extension {
     }
 
     @Override
-    protected void onUnexpectedError(ExtensionUnexpectedError extensionUnexpectedError) {
+    protected void onUnexpectedError(final ExtensionUnexpectedError extensionUnexpectedError) {
         super.onUnexpectedError(extensionUnexpectedError);
 
         MobileCore.log(LoggingMode.ERROR, LOG_TAG,
@@ -87,7 +89,7 @@ class AdjustAdobeExtensionInternal extends Extension {
     }
 
     // internal methods
-    private void registerListenerForConfigurationEvent(ExtensionApi extensionApi) {
+    private void registerListenerForConfigurationEvent(final ExtensionApi extensionApi) {
         ExtensionErrorCallback<ExtensionError>
                 errorCallback = new ExtensionErrorCallback<ExtensionError>() {
             @Override
@@ -104,7 +106,7 @@ class AdjustAdobeExtensionInternal extends Extension {
                 AdjustAdobeExtensionListener.class, errorCallback);
     }
 
-    private void registerListenerForGenericTrackEvent(ExtensionApi extensionApi) {
+    private void registerListenerForGenericTrackEvent(final ExtensionApi extensionApi) {
         ExtensionErrorCallback<ExtensionError>
                 errorCallback = new ExtensionErrorCallback<ExtensionError>() {
             @Override
@@ -125,7 +127,7 @@ class AdjustAdobeExtensionInternal extends Extension {
      * Handles configuration event.  It checks for params to initialise Adjust Sdk (if not already)
      * Also calls to process generic track if there are any queued up
      */
-    private void handleConfigurationEventAsync(Event event) {
+    private void handleConfigurationEventAsync(final Event event) {
         ExtensionErrorCallback<ExtensionError>
                 errorCallback = new ExtensionErrorCallback<ExtensionError>() {
             @Override
@@ -173,9 +175,8 @@ class AdjustAdobeExtensionInternal extends Extension {
      * Handles generic track event.
      * It adds the event into event queue and calls to process them.
      */
-    private void handleGenericTrackEventAsync(Event event) {
+    private void handleGenericTrackEventAsync(final Event event) {
         eventQueue.add(event);
-
         processQueuedEvents();
     }
 

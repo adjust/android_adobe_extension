@@ -27,7 +27,6 @@ import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
  * It filters configuration & generic track event and delegate those to Adjust extension.
  */
 class AdjustSdkApiHandler {
-
     /**
      * Singleton instance of AdjustSdkApiHandler
      */
@@ -200,10 +199,9 @@ class AdjustSdkApiHandler {
             final Context appContext,
             final String appToken,
             final boolean shouldTrackAttribution,
-            final AdjustAdobeExtensionConfig adjustAdobeExtensionConfig) {
-
+            final AdjustAdobeExtensionConfig adjustAdobeExtensionConfig)
+    {
         String environment = AdjustAdobeExtension.getAdjustAdobeExtensionConfig().getEnvironment();
-
         AdjustConfig adjustConfig = new AdjustConfig(appContext, appToken, environment);
 
         switch (MobileCore.getLogLevel()) {
@@ -224,7 +222,7 @@ class AdjustSdkApiHandler {
         adjustConfig.setOnAttributionChangedListener(new OnAttributionChangedListener() {
             @Override
             public
-            void onAttributionChanged(AdjustAttribution attribution) {
+            void onAttributionChanged(final AdjustAttribution attribution) {
                 if (shouldTrackAttribution) {
                     Map<String, String> contextData = new HashMap<String, String>();
                     if (attribution.network != null) {
@@ -261,10 +259,10 @@ class AdjustSdkApiHandler {
     }
 
     private static final class AdjustLifecycleCallbacks
-            implements Application.ActivityLifecycleCallbacks {
-
+            implements Application.ActivityLifecycleCallbacks
+    {
         @Override
-        public void onActivityResumed(Activity activity) {
+        public void onActivityResumed(final Activity activity) {
             activityResumed = true;
 
             // there might be a moment when Sdk is not initialized while Activity resumed
@@ -274,7 +272,7 @@ class AdjustSdkApiHandler {
         }
 
         @Override
-        public void onActivityPaused(Activity activity) {
+        public void onActivityPaused(final Activity activity) {
             activityResumed = false;
 
             // there might be a moment when Sdk is not initialized while Activity paused
@@ -284,19 +282,18 @@ class AdjustSdkApiHandler {
         }
 
         @Override
-        public void onActivityStopped(Activity activity) {}
+        public void onActivityStopped(final Activity activity) {}
 
         @Override
-        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {}
+        public void onActivitySaveInstanceState(final Activity activity, final Bundle outState) {}
 
         @Override
-        public void onActivityDestroyed(Activity activity) {}
+        public void onActivityDestroyed(final Activity activity) {}
 
         @Override
-        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {}
+        public void onActivityCreated(final Activity activity, final Bundle savedInstanceState) {}
 
         @Override
-        public void onActivityStarted(Activity activity) {}
+        public void onActivityStarted(final Activity activity) {}
     }
-
 }

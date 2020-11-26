@@ -5,7 +5,9 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
-public class ActivityLifecycleProvider extends ContentProvider {
+public class ActivityLifecycleProvider
+        extends ContentProvider
+{
     @Override
     public boolean onCreate() {
         return AdjustSdkApiHandler.getInstance().

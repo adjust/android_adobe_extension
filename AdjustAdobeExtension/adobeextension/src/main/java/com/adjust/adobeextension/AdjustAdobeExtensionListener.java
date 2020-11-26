@@ -19,14 +19,17 @@ import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
  * It filters configuration & generic track event and delegate those to Adjust extension.
  */
 class AdjustAdobeExtensionListener
-        extends ExtensionListener {
-
-    protected AdjustAdobeExtensionListener(ExtensionApi extension, String type, String source) {
+        extends ExtensionListener
+{
+    protected AdjustAdobeExtensionListener(final ExtensionApi extension,
+                                           final String type,
+                                           final String source)
+    {
         super(extension, type, source);
     }
 
     @Override
-    public void hear(Event event) {
+    public void hear(final Event event) {
         if (event == null) {
             MobileCore.log(LoggingMode.ERROR, LOG_TAG,
                            "Failed to hear event in listener, event is null");
@@ -64,7 +67,6 @@ class AdjustAdobeExtensionListener
             }
 
         } else if (EVENT_TYPE_ADOBE_GENERIC_TRACK.equalsIgnoreCase(eventType)) {
-
             adjustAdobeExtension.handleGenericTrackEvent(event);
         }
     }

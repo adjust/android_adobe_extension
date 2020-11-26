@@ -23,14 +23,14 @@ public class AdjustAdobeExtension {
     /**
      * Private constructor.
      */
-    private AdjustAdobeExtension(){
+    private AdjustAdobeExtension() {
     }
 
     /**
      * Method used to register Adjust Adobe Extension.
      * @param config extension config to initialize Adjust Sdk
      */
-    public static void registerExtension(AdjustAdobeExtensionConfig config) {
+    public static void registerExtension(final AdjustAdobeExtensionConfig config) {
         if (config == null) {
             MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
                     "AdjustAdobeExtensionConfig is null");

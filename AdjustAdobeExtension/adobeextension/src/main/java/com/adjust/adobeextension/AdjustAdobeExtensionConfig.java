@@ -3,10 +3,6 @@ package com.adjust.adobeextension;
 import com.adjust.sdk.AdjustConfig;
 import com.adjust.sdk.OnAttributionChangedListener;
 import com.adjust.sdk.OnDeeplinkResponseListener;
-import com.adjust.sdk.OnEventTrackingFailedListener;
-import com.adjust.sdk.OnEventTrackingSucceededListener;
-import com.adjust.sdk.OnSessionTrackingFailedListener;
-import com.adjust.sdk.OnSessionTrackingSucceededListener;
 
 /**
  * Class for Adjust Adobe Extension Config.
@@ -14,7 +10,6 @@ import com.adjust.sdk.OnSessionTrackingSucceededListener;
  * See the README for details.
  */
 public class AdjustAdobeExtensionConfig {
-
     /**
      * Environment when sdk to send data for testing.
      */
@@ -43,7 +38,7 @@ public class AdjustAdobeExtensionConfig {
     /**
      * Primary constructor.
      */
-    public AdjustAdobeExtensionConfig(String environment) {
+    public AdjustAdobeExtensionConfig(final String environment) {
         this.environment = environment;
     }
 
@@ -51,7 +46,7 @@ public class AdjustAdobeExtensionConfig {
      * Method to set callback for attribution change.
      */
     public void setOnAttributionChangedListener(
-            OnAttributionChangedListener onAttributionChangedListener)
+            final OnAttributionChangedListener onAttributionChangedListener)
     {
         this.onAttributionChangedListener = onAttributionChangedListener;
     }
@@ -59,7 +54,9 @@ public class AdjustAdobeExtensionConfig {
     /**
      * Method to set callback for deeplink response.
      */
-    public void setOnDeeplinkResponseListener(OnDeeplinkResponseListener onDeeplinkResponseListener) {
+    public void setOnDeeplinkResponseListener(
+            final OnDeeplinkResponseListener onDeeplinkResponseListener)
+    {
         this.onDeeplinkResponseListener = onDeeplinkResponseListener;
     }
 
