@@ -81,7 +81,6 @@ If you are **not targeting the Google Play Store**, you must also add the follow
 If you are using Proguard, add these lines to your Proguard file:
 
 ```
--keep class com.adjust.adobeextension.** { *; }
 -keep class com.adjust.sdk.** { *; }
 -keep class com.google.android.gms.common.ConnectionResult {
     int SUCCESS;
@@ -99,7 +98,6 @@ If you are using Proguard, add these lines to your Proguard file:
 If you are **not publishing your app in the Google Play Store**, use the following package rules:
 
 ```
--keep class com.adjust.adobeextension.** { *; }
 -keep class com.adjust.sdk.** { *; }
 ```
 
@@ -191,27 +189,7 @@ We use this environment to distinguish between real traffic and test traffic fro
 
 ### <a id="qs-session-tracking"></a>Session tracking
 
-In `onCreate` method of your `Application` class, set the application object to Adobe `MobileCore.setApplication` API before registering the Adjust Extension:
-
-
-```java
-import com.adobe.marketing.mobile.MobileCore;
-
-
-public class GlobalApplication extends Application {
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        // set application object
-        MobileCore.setApplication(this);
-
-        // register Adjust Adobe extension
-    }
-}
-```
-
-**Note**: This step is **very important**. Please **make sure that you implement this step in your app**. Completing this step ensures that the Adjust SDK can properly track sessions in your app.
+Adjust SDK can track sessions in your app based on Activity lifecycle.
 
 ### <a id="qs-attribution"></a>Attribution
 
