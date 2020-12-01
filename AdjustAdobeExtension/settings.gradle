@@ -1,0 +1,3 @@
+include ':adobeextension'
+include ':example-app'
+rootProject.name = "AdjustAdobeExtension"

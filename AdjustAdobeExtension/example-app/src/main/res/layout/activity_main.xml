@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="32dp"
+    tools:context=".MainActivity"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btn_track_simple_event"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/track_simple_event"
+        android:onClick="trackSimpleEvent"
+        />
+
+    <Button
+        android:id="@+id/btn_track_revenue_event"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/track_revenue_event"
+        android:onClick="trackRevenueEvent"
+        />
+
+</LinearLayout>
