@@ -33,7 +33,6 @@ public class MainApp extends Application {
         super.onCreate();
 
         // set application object
-        // important for activity lifecycle detection
         MobileCore.setApplication(this);
 
         // set log level
@@ -61,42 +60,6 @@ public class MainApp extends Application {
             public void onAttributionChanged(AdjustAttribution attribution) {
                 Log.d("example", "Attribution callback called!");
                 Log.d("example", "Attribution: " + attribution.toString());
-            }
-        });
-
-        // Set event success tracking delegate.
-        config.setOnEventTrackingSucceededListener(new OnEventTrackingSucceededListener() {
-            @Override
-            public void onFinishedEventTrackingSucceeded(AdjustEventSuccess eventSuccessResponseData) {
-                Log.d("example", "Event success callback called!");
-                Log.d("example", "Event success data: " + eventSuccessResponseData.toString());
-            }
-        });
-
-        // Set event failure tracking delegate.
-        config.setOnEventTrackingFailedListener(new OnEventTrackingFailedListener() {
-            @Override
-            public void onFinishedEventTrackingFailed(AdjustEventFailure eventFailureResponseData) {
-                Log.d("example", "Event failure callback called!");
-                Log.d("example", "Event failure data: " + eventFailureResponseData.toString());
-            }
-        });
-
-        // Set session success tracking delegate.
-        config.setOnSessionTrackingSucceededListener(new OnSessionTrackingSucceededListener() {
-            @Override
-            public void onFinishedSessionTrackingSucceeded(AdjustSessionSuccess sessionSuccessResponseData) {
-                Log.d("example", "Session success callback called!");
-                Log.d("example", "Session success data: " + sessionSuccessResponseData.toString());
-            }
-        });
-
-        // Set session failure tracking delegate.
-        config.setOnSessionTrackingFailedListener(new OnSessionTrackingFailedListener() {
-            @Override
-            public void onFinishedSessionTrackingFailed(AdjustSessionFailure sessionFailureResponseData) {
-                Log.d("example", "Session failure callback called!");
-                Log.d("example", "Session failure data: " + sessionFailureResponseData.toString());
             }
         });
 

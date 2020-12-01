@@ -23,6 +23,7 @@ import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_SOUR
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_TYPE_ADOBE_GENERIC_TRACK;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_TYPE_ADOBE_HUB;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EXTENSION_NAME;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EXTENSION_VERSION;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
 
 /**
@@ -30,17 +31,19 @@ import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
  * It registers and handles configuration & generic track event.
  * It delegates calls to Adjust Sdk using Api handler
  */
-class AdjustAdobeExtensionInternal extends Extension {
+class AdjustAdobeExtensionInternal
+        extends Extension
+{
     private final ConcurrentLinkedQueue<Event> eventQueue;
-    private final Object executorLock = new Object();
-    private ExecutorService executorService;
+    private final ExecutorService executorService;
     private final AdjustSdkApiHandler adjustSdkApiHandler;
 
     protected AdjustAdobeExtensionInternal(final ExtensionApi extensionApi) {
         super(extensionApi);
 
         eventQueue = new ConcurrentLinkedQueue<>();
-        adjustSdkApiHandler = new AdjustSdkApiHandler();
+        adjustSdkApiHandler = AdjustSdkApiHandler.getInstance();
+        executorService = Executors.newSingleThreadExecutor();
 
         registerListenerForConfigurationEvent(extensionApi);
         registerListenerForGenericTrackEvent(extensionApi);
@@ -53,19 +56,22 @@ class AdjustAdobeExtensionInternal extends Extension {
 
     @Override
     protected String getVersion() {
-        return adjustSdkApiHandler.getVersion();
+        return String.format("%s@%s", EXTENSION_VERSION, adjustSdkApiHandler.getVersion());
     }
 
     @Override
-    protected void onUnexpectedError(ExtensionUnexpectedError extensionUnexpectedError) {
+    protected void onUnexpectedError(final ExtensionUnexpectedError extensionUnexpectedError) {
         super.onUnexpectedError(extensionUnexpectedError);
 
         MobileCore.log(LoggingMode.ERROR, LOG_TAG,
-                       "ExtensionUnexpectedError : " + extensionUnexpectedError.getMessage());
+                       "ExtensionUnexpectedError"
+                               + extensionUnexpectedError != null ?
+                                    ": " + extensionUnexpectedError.getMessage()
+                                    : " with null error");
     }
 
     protected void handleConfigurationEvent(final Event event) {
-        getExecutorService().execute(new Runnable() {
+        executorService.execute(new Runnable() {
             @Override
             public void run() {
                 handleConfigurationEventAsync(event);
@@ -74,7 +80,7 @@ class AdjustAdobeExtensionInternal extends Extension {
     }
 
     protected void handleGenericTrackEvent(final Event event) {
-        getExecutorService().execute(new Runnable() {
+        executorService.execute(new Runnable() {
             @Override
             public void run() {
                 handleGenericTrackEventAsync(event);
@@ -83,7 +89,7 @@ class AdjustAdobeExtensionInternal extends Extension {
     }
 
     // internal methods
-    private void registerListenerForConfigurationEvent(ExtensionApi extensionApi) {
+    private void registerListenerForConfigurationEvent(final ExtensionApi extensionApi) {
         ExtensionErrorCallback<ExtensionError>
                 errorCallback = new ExtensionErrorCallback<ExtensionError>() {
             @Override
@@ -100,7 +106,7 @@ class AdjustAdobeExtensionInternal extends Extension {
                 AdjustAdobeExtensionListener.class, errorCallback);
     }
 
-    private void registerListenerForGenericTrackEvent(ExtensionApi extensionApi) {
+    private void registerListenerForGenericTrackEvent(final ExtensionApi extensionApi) {
         ExtensionErrorCallback<ExtensionError>
                 errorCallback = new ExtensionErrorCallback<ExtensionError>() {
             @Override
@@ -121,7 +127,7 @@ class AdjustAdobeExtensionInternal extends Extension {
      * Handles configuration event.  It checks for params to initialise Adjust Sdk (if not already)
      * Also calls to process generic track if there are any queued up
      */
-    private void handleConfigurationEventAsync(Event event) {
+    private void handleConfigurationEventAsync(final Event event) {
         ExtensionErrorCallback<ExtensionError>
                 errorCallback = new ExtensionErrorCallback<ExtensionError>() {
             @Override
@@ -138,20 +144,28 @@ class AdjustAdobeExtensionInternal extends Extension {
                 errorCallback);
 
         if (sharedEventState == null) {
+            MobileCore.log(LoggingMode.ERROR, LOG_TAG,
+                           "Failed to handle configuration event, "
+                           + "sharedEventState is null");
             return;
         }
 
-        if (!sharedEventState.containsKey(ADJUST_APP_TOKEN_KEY) ||
-            !sharedEventState.containsKey(ADJUST_TRACK_ATTRIBUTION_KEY)) {
+        Object appTokenObject = sharedEventState.get(ADJUST_APP_TOKEN_KEY);
+        Object shouldTrackAttributionObject = sharedEventState.get(ADJUST_TRACK_ATTRIBUTION_KEY);
+
+        if (!(appTokenObject instanceof String)
+                || !(shouldTrackAttributionObject instanceof Boolean))
+        {
+            MobileCore.log(LoggingMode.ERROR, LOG_TAG,
+                           "Failed to handle configuration event, "
+                           + "appToken or shouldTrackAttribution are not instance of correct type");
             return;
         }
 
-        String appToken = (String)sharedEventState.get(ADJUST_APP_TOKEN_KEY);
-        Boolean trackAttributionObject = (Boolean)sharedEventState.get(ADJUST_TRACK_ATTRIBUTION_KEY);
+        String appToken = (String)appTokenObject;
+        Boolean shouldTrackAttribution = (Boolean)shouldTrackAttributionObject;
 
-        boolean shouldTrackAttribution = trackAttributionObject != null && trackAttributionObject;
-
-        adjustSdkApiHandler.initSdk(appToken, shouldTrackAttribution);
+        adjustSdkApiHandler.initSdk(appToken, shouldTrackAttribution.booleanValue());
 
         // process events arrived before initialisation
         processQueuedEvents();
@@ -161,9 +175,8 @@ class AdjustAdobeExtensionInternal extends Extension {
      * Handles generic track event.
      * It adds the event into event queue and calls to process them.
      */
-    private void handleGenericTrackEventAsync(Event event) {
+    private void handleGenericTrackEventAsync(final Event event) {
         eventQueue.add(event);
-
         processQueuedEvents();
     }
 
@@ -177,30 +190,21 @@ class AdjustAdobeExtensionInternal extends Extension {
         }
 
         while (!eventQueue.isEmpty()) {
-            Event event = eventQueue.peek();
+            Event event = eventQueue.poll();
 
             if (event != null) {
                 Map<String, Object> eventData = event.getEventData();
-                Object contextDataObject = eventData.get(EVENT_CONTEXT_DATA_KEY);
-                if ((contextDataObject instanceof Map)) {
-                    Map<String, String> contextData = (Map<String, String>)contextDataObject;
-
-                    adjustSdkApiHandler.trackEvent(contextData);
+                if (eventData == null) {
+                    continue;
                 }
-            }
+                Object contextDataObject = eventData.get(EVENT_CONTEXT_DATA_KEY);
+                if (!(contextDataObject instanceof Map)) {
+                    continue;
+                }
+                Map<String, String> contextData = (Map<String, String>)contextDataObject;
 
-            eventQueue.poll();
+                adjustSdkApiHandler.trackEvent(contextData);
+            }
         }
     }
-
-    private ExecutorService getExecutorService() {
-        synchronized (executorLock) {
-            if (executorService == null) {
-                executorService = Executors.newSingleThreadExecutor();
-            }
-
-            return executorService;
-        }
-    }
-
 }

@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     public void trackSimpleEvent(View view) {
         String action = "Track simple event";
         Map<String, String> contextData= new HashMap<String, String>();
-        contextData.put("adj.eventToken", "kdvads");
+        contextData.put("adj.eventToken", "g3mfiw");
 
         MobileCore.trackState(action, contextData);
     }
@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     public void trackRevenueEvent(View view) {
         String action = "Track revenue event";
         Map<String, String> contextData= new HashMap<String, String>();
-        contextData.put("adj.eventToken", "19sfd2");
+        contextData.put("adj.eventToken", "a4fd35");
         contextData.put("adj.revenue", "0.01");
         contextData.put("adj.currency", "EUR");
 

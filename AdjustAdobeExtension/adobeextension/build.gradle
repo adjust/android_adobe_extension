@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.library'
+    id 'com.jfrog.bintray'
     id 'maven-publish'
-    id 'signing'
 }
 
 android {
@@ -12,7 +12,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 30
         versionCode 1
-        versionName '1.0'  //append -SNAPSHOT for snapshot version
+        versionName '0.0.1'
 
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -30,224 +30,53 @@ dependencies {
     implementation 'com.adobe.marketing.mobile:sdk-core:1.5.7'
 }
 
-task adjustAdobeExtensionAarRelease(type: Copy) {
-    dependsOn 'assembleRelease'
+//region Publish to jCenter
+def libGroupId = 'com.adjust.adobeextension'
+def libArtifactId = 'adobeextension'
+def libVersion = '0.0.1'
+def libDesc = 'This is the Android Adobe Mobile Extension of Adjust.'
+def libLicenses = ['Apache-2.0']
+def libVCSUrl = 'https://github.com/adjust/android_adobe_extension.git'
 
-    from('build/outputs/aar/')
-    include 'adjust-adobe-extension-release.aar'
-    destinationDir file('build/libs/')
-    rename 'adjust-adobe-extension-release.aar', 'adjust-adobe-extension-release.aar'
-}
-
-task adjustAdobeExtensionAarDebug(type: Copy) {
-    dependsOn 'assembleDebug'
-
-    from('build/outputs/aar/')
-    include 'adjust-adobe-extension-debug.aar'
-    destinationDir file('build/libs/')
-    rename 'adjust-adobe-extension-debug.aar', 'adjust-adobe-extension-debug.aar'
-}
-
-task adjustAdobeExtensionJarRelease(type: Jar) {
-    dependsOn 'compileReleaseJavaWithJavac'
-    from('build/intermediates/javac/release/classes/')
-    archiveName "adjust-adobe-extension-release.jar"
-}
-
-task adjustAdobeExtensionJarDebug(type: Jar) {
-    dependsOn 'compileDebugJavaWithJavac'
-    from('build/intermediates/javac/debug/classes/')
-    archiveName "adjust-adobe-extension-debug.jar"
-}
-
-task androidJavadocs(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    // JDK 1.8 is more strict then 1.7. Have JDK 1.8 behave like 1.7 for javadoc generation.
-    if (org.gradle.internal.jvm.Jvm.current().getJavaVersion() == JavaVersion.VERSION_1_8) {
-        options.addStringOption('Xdoclint:none', '-quiet')
-    }
-}
-
-task adjustAdobeExtensionAndroidJavadocsJar(type: Jar) {
-    dependsOn 'androidJavadocs'
-    classifier = 'javadoc'
-    from androidJavadocs.destinationDir
-}
-
-task adjustAdobeExtensionAndroidSourcesJar(type: Jar) {
-    classifier = 'sources'
+// Generate Source Jar
+task sourceJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
+    classifier "sources"
 }
 
-artifacts {
-    archives adjustAdobeExtensionJarRelease
-    archives adjustAdobeExtensionAndroidJavadocsJar
-    archives adjustAdobeExtensionAndroidSourcesJar
-}
-
+// Create the publication with the pom configuration
 publishing {
     publications {
-        mavenAndroidCore(MavenPublication) {
-            customizePom(pom)
-            groupId 'com.adjust.adobeextension'
-            artifactId 'adjust-adobe-extension-android'
-            version '1.0'
-
-            artifact adjustAdobeExtensionJarRelease
-            artifact adjustAdobeExtensionAndroidJavadocsJar
-            artifact adjustAdobeExtensionAndroidSourcesJar
-        }
-
-        mavenAndroidCoreAAR(MavenPublication) {
-            customizePomForAar(pom)
-            groupId 'com.adjust.adobeextension'
-            artifactId 'adjust-adobe-extension-android'
-            version '1.0'
-
-            // Create the signed POM artifact.
-            pom.withXml {
-                def pomFile = file("${project.buildDir}/generated-pom.xml")
-                writeTo(pomFile)
-                def pomAscFile = signing.sign(pomFile).signatureFiles[0]
-                artifact(pomAscFile) {
-                    classifier = null
-                    extension = 'pom.asc'
-                }
-            }
-
-            artifact("$buildDir/outputs/aar/adjust-adobe-extension-release.aar")
-            artifact adjustAdobeExtensionAndroidJavadocsJar
-            artifact adjustAdobeExtensionAndroidSourcesJar
-        }
-
-    }
-
-    repositories {
-        maven {
-            url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
-            if (project.hasProperty("sonatypeUsername")) {
-                credentials {
-                    username sonatypeUsername
-                    password sonatypePassword
-                }
-            }
+        AdobeExtensionAar(MavenPublication) {
+            groupId libGroupId
+            artifactId libArtifactId
+            version libVersion
+            artifact(sourceJar)
+            artifact("$buildDir/outputs/aar/$libArtifactId-release.aar")
         }
     }
 }
 
-def customizePom(pom) {
-    pom.withXml {
-        // Add all items necessary for maven central publication.
-        asNode().children().last() + {
-            resolveStrategy = Closure.DELEGATE_FIRST
-            description 'The Adjust Adobe Extension for Android'
-            name 'Adjust Adobe Android Extension'
-            url 'https://github.com/adjust/android_adobe_extension'
-            organization {
-                name 'adjust GmbH'
-                url 'http://www.adjust.com'
-            }
-            licenses {
-                license {
-                    name 'MIT License'
-                    url 'http://www.opensource.org/licenses/mit-license.php'
-                }
-            }
-            scm {
-                url 'git@github.com:adjust/android_adobe_extension.git'
-                connection 'scm:git:git@github.com:adjust/android_adobe_extension.git'
-                developerConnection 'scm:git:git@github.com:adjust/android_adobe_extension.git'
-            }
-            developers {
-                developer {
-                    name 'Pedro Silva'
-                    email 'pedro@adjust.com'
-                }
-                developer {
-                    name 'Shashank Suhane'
-                    email 'shashank@adjust.com'
-                }
-                developer {
-                    name 'Ugljesa Erceg'
-                    email 'ugljesa@adjust.com'
-                }
-            }
+// Bintray config
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+    publications = ['AdobeExtensionAar']
+    pkg {
+        repo = "Maven"
+        name = "$libGroupId:$libArtifactId"
+        desc = libDesc
+        licenses = libLicenses
+        vcsUrl = libVCSUrl
+        version {
+            name = libVersion
+            vcsTag = libVersion
+            released = new Date()
         }
     }
 }
 
-def customizePomForAar(pom) {
-    pom.withXml {
-        // Remove the existing packaging field, as it has to be overridden with type aar
-        asNode().remove(asNode().get("packaging"))
 
-        // Add all items necessary for maven central publication.
-        asNode().children().last() + {
-            resolveStrategy = Closure.DELEGATE_FIRST
-            description 'The Adjust Adobe Extension for Android'
-            name 'Adjust Adobe Extension Android'
-            url 'https://github.com/adjust/android_adobe_extension'
-            packaging 'aar'
-            organization {
-                name 'adjust GmbH'
-                url 'http://www.adjust.com'
-            }
-            licenses {
-                license {
-                    name 'MIT License'
-                    url 'http://www.opensource.org/licenses/mit-license.php'
-                }
-            }
-            scm {
-                url 'git@github.com:adjust/android_adobe_extension.git'
-                connection 'scm:git:git@github.com:adjust/android_adobe_extension.git'
-                developerConnection 'scm:git:git@github.com:adjust/android_adobe_extension.git'
-            }
-            developers {
-                developer {
-                    name 'Pedro Silva'
-                    email 'pedro@adjust.com'
-                }
-                developer {
-                    name 'Shashank Suhane'
-                    email 'shashank@adjust.com'
-                }
-                developer {
-                    name 'Ugljesa Erceg'
-                    email 'ugljesa@adjust.com'
-                }
-            }
-        }
-    }
-}
-
-model {
-    tasks.generatePomFileForMavenAndroidCorePublication {
-        destination = file("${project.buildDir}/generated-pom.xml")
-    }
-    /* TODO check if/how to replace this tasks
-    tasks.publishMavenAndroidCorePublicationToMavenLocal {
-        dependsOn project.tasks.signArchives
-    }
-    tasks.publishMavenAndroidCorePublicationToMavenRepository {
-        dependsOn project.tasks.signArchives
-    }
-    */
-    tasks.generatePomFileForMavenAndroidCoreAARPublication {
-        destination = file("${project.buildDir}/generated-pom.xml")
-    }
-    /* TODO check if/how to replace this tasks
-    tasks.publishMavenAndroidCoreAARPublicationToMavenLocal {
-        dependsOn project.tasks.signArchives
-    }
-    tasks.publishMavenAndroidCoreAARPublicationToMavenRepository {
-        dependsOn project.tasks.signArchives
-    }
-    */
-}
-
-signing {
-    sign publishing.publications.mavenAndroidCore
-    sign publishing.publications.mavenAndroidCoreAAR
-}

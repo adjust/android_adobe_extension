@@ -27,23 +27,37 @@ import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
  * It filters configuration & generic track event and delegate those to Adjust extension.
  */
 class AdjustSdkApiHandler {
+    /**
+     * Singleton instance of AdjustSdkApiHandler
+     */
+    private static volatile AdjustSdkApiHandler instance = null;
 
     /**
      * Flag to indicate if Adjust Sdk has been initialized yet
      */
-    private static boolean sdkInitialised;
+    private static boolean sdkInitialised = false;
 
     /**
      * Toggle flag to indicate whether Android Activity has been resumed or paused
      */
-    private static boolean activityResumed;
+    private static boolean activityResumed = false;
 
-    public AdjustSdkApiHandler() {
-        sdkInitialised = false;
-        activityResumed = false;
+    /**
+     * Application instance
+     */
+    private static Application application;
 
-        // register to activity life cycle callbacks, to keep track of Activity state
-        registerActivityLifecycleCallbacks();
+    private AdjustSdkApiHandler() {}
+
+    protected static AdjustSdkApiHandler getInstance() {
+        if (instance == null) {
+            synchronized (AdjustSdkApiHandler.class) {
+                if (instance == null) {
+                    instance = new AdjustSdkApiHandler();
+                }
+            }
+        }
+        return instance;
     }
 
     /**
@@ -53,6 +67,8 @@ class AdjustSdkApiHandler {
      */
     protected void initSdk(final String appToken, final boolean shouldTrackAttribution) {
         if (sdkInitialised) {
+            MobileCore.log(LoggingMode.WARNING, LOG_TAG,
+                    "Cannot initialise SDK, already initialised");
             return;
         }
 
@@ -63,21 +79,21 @@ class AdjustSdkApiHandler {
             return;
         }
 
-        if (appToken == null || appToken.isEmpty()) {
+        if (appToken == null) {
             MobileCore.log(LoggingMode.ERROR, LOG_TAG,
                            "Cannot initialise SDK, appToken is null or empty");
         }
 
-        if (AdjustAdobeExtension.getAdjustAdobeExtensionConfig() == null) {
+        AdjustAdobeExtensionConfig adjustAdobeExtensionConfig =
+                AdjustAdobeExtension.getAdjustAdobeExtensionConfig();
+        if (adjustAdobeExtensionConfig == null) {
             MobileCore.log(LoggingMode.ERROR, LOG_TAG,
                            "Cannot initialise SDK, adjust extension config is null");
         }
 
-        AdjustConfig
-                adjustConfig = getAdjustConfig(application.getApplicationContext(),
-                                               appToken,
-                                               shouldTrackAttribution,
-                                               AdjustAdobeExtension.getAdjustAdobeExtensionConfig());
+        AdjustConfig adjustConfig = getAdjustConfig(application.getApplicationContext(),
+                appToken, shouldTrackAttribution, adjustAdobeExtensionConfig);
+        adjustConfig.setSdkPrefix(AdjustAdobeExtensionConstants.EXTENSION_VERSION);
         Adjust.onCreate(adjustConfig);
 
         // there might be a moment when activity is already resumed before Sdk initialization
@@ -94,11 +110,15 @@ class AdjustSdkApiHandler {
      */
     protected void trackEvent(final Map<String, String> contextData) {
         if (contextData == null) {
+            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
+                           "Cannot track event, contextData is null");
             return;
         }
 
-        String eventToken = (String)contextData.get(ADJUST_EVENT_TOKEN_KEY);
+        String eventToken = contextData.get(ADJUST_EVENT_TOKEN_KEY);
         if (eventToken == null) {
+            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
+                           "Cannot track event, eventToken is null");
             return;
         }
 
@@ -134,12 +154,40 @@ class AdjustSdkApiHandler {
         return Adjust.getSdkVersion();
     }
 
-    // internal methods
-    private void registerActivityLifecycleCallbacks() {
-        Application application = MobileCore.getApplication();
+    /**
+     * This registers AdjustLifecycleCallbacks to activity lifecycle callbacks
+     * It allows tracking of activity lifecycle states
+     */
+    protected boolean registerActivityLifecycleCallbacks(final Context context) {
         if (application != null) {
-            application.registerActivityLifecycleCallbacks(new AdjustLifecycleCallbacks());
+            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
+                           "Cannot register activity lifecycle callbacks more than once");
+            return false;
         }
+
+        if (context == null) {
+            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
+                           "Cannot register activity lifecycle callbacks without context");
+            return false;
+        }
+
+        final Context applicationContext = context.getApplicationContext();
+
+        if (!(applicationContext instanceof Application)) {
+            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
+                           "Cannot register activity lifecycle callbacks "
+                           + "without application context as Application");
+            return false;
+        }
+
+        MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
+                       "Registering activity lifecycle callbacks");
+
+
+        application = (Application) applicationContext;
+        application.registerActivityLifecycleCallbacks(new AdjustLifecycleCallbacks());
+
+        return true;
     }
 
     /**
@@ -151,35 +199,55 @@ class AdjustSdkApiHandler {
             final Context appContext,
             final String appToken,
             final boolean shouldTrackAttribution,
-            final AdjustAdobeExtensionConfig adjustAdobeExtensionConfig) {
-
+            final AdjustAdobeExtensionConfig adjustAdobeExtensionConfig)
+    {
         String environment = AdjustAdobeExtension.getAdjustAdobeExtensionConfig().getEnvironment();
-
         AdjustConfig adjustConfig = new AdjustConfig(appContext, appToken, environment);
 
-        adjustConfig.setLogLevel(getAdjustLogLevel());
+        switch (MobileCore.getLogLevel()) {
+            case ERROR:
+                adjustConfig.setLogLevel(LogLevel.ERROR);
+                break;
+            case WARNING:
+                adjustConfig.setLogLevel(LogLevel.WARN);
+                break;
+            case DEBUG:
+                adjustConfig.setLogLevel(LogLevel.DEBUG);
+                break;
+            case VERBOSE:
+                adjustConfig.setLogLevel(LogLevel.VERBOSE);
+                break;
+        }
 
         adjustConfig.setOnAttributionChangedListener(new OnAttributionChangedListener() {
             @Override
             public
-            void onAttributionChanged(AdjustAttribution attribution) {
+            void onAttributionChanged(final AdjustAttribution attribution) {
                 if (shouldTrackAttribution) {
-                    Map<String, String>
-                            contextData = new HashMap<String, String>();
-                    contextData.put("adjust.adgroup" , attribution.adgroup);
-                    contextData.put("adjust.adid" , attribution.adid);
-                    contextData.put("adjust.campaign" , attribution.campaign);
-                    contextData.put("adjust.clickLabel" , attribution.clickLabel);
-                    contextData.put("adjust.creative" , attribution.creative);
-                    contextData.put("adjust.network" , attribution.network);
-                    contextData.put("adjust.trackerName" , attribution.trackerName);
-                    contextData.put("adjust.trackerToken" , attribution.trackerToken);
+                    Map<String, String> contextData = new HashMap<String, String>();
+                    if (attribution.network != null) {
+                        contextData.put("Adjust Network" , attribution.network);
+                    }
 
-                    MobileCore.trackAction("Adjust Attribution Data", contextData);
+                    if (attribution.campaign != null) {
+                        contextData.put("Adjust Campaign" , attribution.campaign);
+                    }
+
+                    if (attribution.adgroup != null) {
+                        contextData.put("Adjust AdGroup" , attribution.adgroup);
+                    }
+
+                    if (attribution.creative != null) {
+                        contextData.put("Adjust Creative" , attribution.creative);
+                    }
+
+                    MobileCore.trackAction("Adjust Campaign Data Received", contextData);
                 }
 
-                if (adjustAdobeExtensionConfig.getOnAttributionChangedListener() != null) {
-                    adjustAdobeExtensionConfig.getOnAttributionChangedListener().onAttributionChanged(attribution);
+                OnAttributionChangedListener onAttributionChangedListener =
+                        adjustAdobeExtensionConfig.getOnAttributionChangedListener();
+                if (onAttributionChangedListener != null) {
+                    onAttributionChangedListener.onAttributionChanged(attribution);
                 }
             }
         });
@@ -187,43 +255,14 @@ class AdjustSdkApiHandler {
         adjustConfig.setOnDeeplinkResponseListener(
                 adjustAdobeExtensionConfig.getOnDeeplinkResponseListener());
 
-        adjustConfig.setOnEventTrackingFailedListener(
-                adjustAdobeExtensionConfig.getOnEventTrackingFailedListener());
-
-        adjustConfig.setOnEventTrackingSucceededListener(
-                adjustAdobeExtensionConfig.getOnEventTrackingSucceededListener());
-
-        adjustConfig.setOnSessionTrackingFailedListener(
-                adjustAdobeExtensionConfig.getOnSessionTrackingFailedListener());
-
-        adjustConfig.setOnSessionTrackingSucceededListener(
-                adjustAdobeExtensionConfig.getOnSessionTrackingSucceededListener());
-
         return adjustConfig;
     }
 
-    /**
-     *  Method to map Adobe Extension log level to Adjust Sdk log level
-     */
-    private LogLevel getAdjustLogLevel() {
-        switch (MobileCore.getLogLevel()) {
-            case ERROR:
-                return LogLevel.ERROR;
-
-            case WARNING:
-                return LogLevel.WARN;
-
-            case DEBUG:
-                return LogLevel.DEBUG;
-
-            default:
-                return LogLevel.VERBOSE;
-        }
-    }
-
-    private static final class AdjustLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
+    private static final class AdjustLifecycleCallbacks
+            implements Application.ActivityLifecycleCallbacks
+    {
         @Override
-        public void onActivityResumed(Activity activity) {
+        public void onActivityResumed(final Activity activity) {
             activityResumed = true;
 
             // there might be a moment when Sdk is not initialized while Activity resumed
@@ -233,7 +272,7 @@ class AdjustSdkApiHandler {
         }
 
         @Override
-        public void onActivityPaused(Activity activity) {
+        public void onActivityPaused(final Activity activity) {
             activityResumed = false;
 
             // there might be a moment when Sdk is not initialized while Activity paused
@@ -243,19 +282,18 @@ class AdjustSdkApiHandler {
         }
 
         @Override
-        public void onActivityStopped(Activity activity) {}
+        public void onActivityStopped(final Activity activity) {}
 
         @Override
-        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {}
+        public void onActivitySaveInstanceState(final Activity activity, final Bundle outState) {}
 
         @Override
-        public void onActivityDestroyed(Activity activity) {}
+        public void onActivityDestroyed(final Activity activity) {}
 
         @Override
-        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {}
+        public void onActivityCreated(final Activity activity, final Bundle savedInstanceState) {}
 
         @Override
-        public void onActivityStarted(Activity activity) {}
+        public void onActivityStarted(final Activity activity) {}
     }
-
 }

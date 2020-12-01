@@ -17,6 +17,7 @@ This is the Android Adobe Mobile Extension of Adjust™. You can read more about
    * [Integrate the Adjust SDK Extension into your app](#qs-integrate-extension)
       * [Basic setup](#qs-basic-setup)
       * [Session tracking](#qs-session-tracking)
+      * [Attribution](#qs-attribution)
       * [Adjust logging](#qs-adjust-logging)
       * [Build your app](#qs-build-the-app)
 
@@ -28,7 +29,6 @@ This is the Android Adobe Mobile Extension of Adjust™. You can read more about
 ### Additional features
 
    * [Attribution callback](#af-attribution-callback)
-   * [Session and event callbacks](#af-session-event-callbacks)
 
 
 ## Quick start
@@ -81,7 +81,6 @@ If you are **not targeting the Google Play Store**, you must also add the follow
 If you are using Proguard, add these lines to your Proguard file:
 
 ```
--keep class com.adjust.adobeextension.** { *; }
 -keep class com.adjust.sdk.** { *; }
 -keep class com.google.android.gms.common.ConnectionResult {
     int SUCCESS;
@@ -99,7 +98,6 @@ If you are using Proguard, add these lines to your Proguard file:
 If you are **not publishing your app in the Google Play Store**, use the following package rules:
 
 ```
--keep class com.adjust.adobeextension.** { *; }
 -keep class com.adjust.sdk.** { *; }
 ```
 
@@ -191,27 +189,16 @@ We use this environment to distinguish between real traffic and test traffic fro
 
 ### <a id="qs-session-tracking"></a>Session tracking
 
-In `onCreate` method of your `Application` class, set the application object to Adobe `MobileCore.setApplication` API before registering the Adjust Extension:
+Adjust SDK can track sessions in your app based on Activity lifecycle.
 
+### <a id="qs-attribution"></a>Attribution
 
-```java
-import com.adobe.marketing.mobile.MobileCore;
+The option to share attribution data with Adobe is in the Launch dashboard under the extensions configuration and is on by default. Adjust tracks the action name `Adjust Campaign Data Received` with the following attribution information from Adjust:
 
-
-public class GlobalApplication extends Application {
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        // set application object
-        MobileCore.setApplication(this);
-
-        // register Adjust Adobe extension
-    }
-}
-```
-
-**Note**: This step is **very important**. Please **make sure that you implement this step in your app**. Completing this step ensures that the Adjust SDK can properly track sessions in your app.
+* `Adjust Network`
+* `Adjust Campaign`
+* `Adjust AdGroup`
+* `Adjust Creative`
 
 ### <a id="qs-adjust-logging"></a>Adjust logging
 
@@ -282,74 +269,8 @@ config.setOnAttributionChangedListener(new OnAttributionChangedListener() {
 AdjustAdobeExtension.registerExtension(config);
 ```
 
-The listener function is called after the SDK receives the final attribution data. Within the listener function, you'll have access to the `attribution` parameter. Here is a quick summary of its properties:
+The listener function is called after the SDK receives the final attribution data. Within the listener function, you'll have access to the `attribution` parameter. 
 
-- `trackerToken` the tracker token string of the current attribution.
-- `trackerName` the tracker name string of the current attribution.
-- `network` the network grouping level string of the current attribution.
-- `campaign` the campaign grouping level string of the current attribution.
-- `adgroup` the ad group grouping level string of the current attribution.
-- `creative` the creative grouping level string of the current attribution.
-- `clickLabel` the click label string of the current attribution.
-- `adid` the Adjust device identifier string.
-
-### <a id="af-session-event-callbacks"></a>Session and event callbacks
-
-You can register a listener to be notified when events or sessions are tracked. There are four listeners: one for tracking successful events, one for tracking failed events, one for tracking successful sessions, and one for tracking failed sessions. Add as many listeners as you need after creating the config object like so:
-
-```java
-AdjustAdobeExtensionConfig config = new AdjustAdobeExtensionConfig(environment);
-
-// Set event success tracking delegate.
-config.setOnEventTrackingSucceededListener(new OnEventTrackingSucceededListener() {
-    @Override
-    public void onFinishedEventTrackingSucceeded(AdjustEventSuccess eventSuccessResponseData) {
-        // ...
-    }
-});
-
-// Set event failure tracking delegate.
-config.setOnEventTrackingFailedListener(new OnEventTrackingFailedListener() {
-    @Override
-    public void onFinishedEventTrackingFailed(AdjustEventFailure eventFailureResponseData) {
-        // ...
-    }
-});
-
-// Set session success tracking delegate.
-config.setOnSessionTrackingSucceededListener(new OnSessionTrackingSucceededListener() {
-    @Override
-    public void onFinishedSessionTrackingSucceeded(AdjustSessionSuccess sessionSuccessResponseData) {
-        // ...
-    }
-});
-
-// Set session failure tracking delegate.
-config.setOnSessionTrackingFailedListener(new OnSessionTrackingFailedListener() {
-    @Override
-    public void onFinishedSessionTrackingFailed(AdjustSessionFailure sessionFailureResponseData) {
-        // ...
-    }
-});
-
-AdjustAdobeExtension.registerExtension(config);
-```
-
-Here is a quick summary of the success session response data object fields:
-
-- `message` message string from the server (or the error logged by the SDK).
-- `timestamp` timestamp string from the server.
-- `adid` a unique string device identifier provided by Adjust.
-- `jsonResponse` the JSON object with the reponse from the server.
-
-Both event response data objects contain:
-
-- `eventToken` the event token string, if the package tracked was an event.
-- `callbackId` the custom defined [callback ID](#cp-event-callback-id) string set on the event object.
-
-And both event and session failed objects also contain:
-
-- `willRetry` boolean which indicates whether there will be a later attempt to resend the package.
 
 [dashboard]:  http://adjust.com
 [adjust.com]: http://adjust.com
