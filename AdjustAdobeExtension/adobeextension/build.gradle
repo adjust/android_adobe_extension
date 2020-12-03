@@ -12,7 +12,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 30
         versionCode 1
-        versionName '0.0.1'
+        versionName '1.0.0'
 
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -33,9 +33,9 @@ dependencies {
 //region Publish to jCenter
 def libGroupId = 'com.adjust.adobeextension'
 def libArtifactId = 'adobeextension'
-def libVersion = '0.0.1'
+def libVersion = '1.0.0'
 def libDesc = 'This is the Android Adobe Mobile Extension of Adjust.'
-def libLicenses = ['Apache-2.0']
+def libLicenses = ['MIT License']
 def libVCSUrl = 'https://github.com/adjust/android_adobe_extension.git'
 
 // Generate Source Jar
