@@ -1,4 +1,4 @@
-# Adjust SDK Extension
+# Adjust Extension for Adobe Experience SDK
 
 This is the Android Adobe Mobile Extension of Adjust™. You can read more about Adjust™ at [adjust.com].
 
@@ -39,7 +39,7 @@ There is an Android example app inside the [example-app][example-app] directory.
 
 ### <a id="qs-getting-started"></a>Getting started
 
-These are the minimum required steps to integrate the Adjust SDK Extension in your Android app. We assume that you are using Android Studio for your Android development. The minimum supported Android API level for the Adjust Adobe Extension integration is **14 (Ice Cream Sandwich)**.
+These are the minimum required steps to integrate the Adjust Extension in your Android app. We assume that you are using Android Studio for your Android development. The minimum supported Android API level for the Adjust Extension for Adobe Experience SDK integration is **14 (Ice Cream Sandwich)**.
 
 ### <a id="qs-add-extension"></a>Add the Extension to your project
 
@@ -59,11 +59,11 @@ Apps in the Google Play Store must use the [Google Advertising ID][google-ad-id]
 implementation 'com.google.android.gms:play-services-ads-identifier:17.0.0'
 ```
 
-**Note**: The Adjust SDK Extension is not tied to any specific version of the `play-services-analytics` part of the Google Play Services library. You can use the latest version of the library, or any other version you need.
+**Note**: The Adjust Extension is not tied to any specific version of the `play-services-analytics` part of the Google Play Services library. You can use the latest version of the library, or any other version you need.
 
 ### <a id="qs-permissions"></a>Add permissions
 
-The Adjust SDK Extension requires the following permissions. Please add them to your `AndroidManifest.xml` file if they are not already present:
+The Adjust Extension requires the following permissions. Please add them to your `AndroidManifest.xml` file if they are not already present:
 
 ```xml
 <uses-permission android:name="android.permission.INTERNET"/>
@@ -119,7 +119,7 @@ Please follow the directions for your [Proguard settings](#qs-proguard) carefull
 -keep public class com.android.installreferrer.** { *; }
 ```
 
-### <a id="qs-integrate-extension"></a>Integrate the Adjust SDK Extension into your app
+### <a id="qs-integrate-extension"></a>Integrate the Adjust Extension into your app
 
 First, we'll set up basic session tracking.
 
@@ -248,7 +248,7 @@ contextData.put("adj.currency", "EUR");
 
 ## Additional features
 
-Once you have integrated the Adjust Adobe Extension into your project, you can take advantage of the following features:
+Once you have integrated the Adjust Extension for Adobe Experience SDK into your project, you can take advantage of the following features:
 
 ### <a id="af-attribution-callback"></a>Attribution callback
 
