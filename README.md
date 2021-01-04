@@ -274,7 +274,7 @@ The listener function is called after the SDK receives the final attribution dat
 
 ### <a id="af-deferred-deep-linking-callback"></a>Deferred deep linking callback
 
-The Adjust SDK opens the deferred deep link by default. There is no extra configuration needed.  But if you wish to control whether the Adjust SDK will open the deferred deep link or not, you can do it with a callback method in the config object.
+The Adjust SDK opens the deferred deep link by default. There is no extra configuration needed. But if you wish to control whether the Adjust SDK will open the deferred deep link or not, you can do it with a callback method in the config object.
 
 With the extension config instance, add the deferred deep linking callback before you start the SDK:
 
