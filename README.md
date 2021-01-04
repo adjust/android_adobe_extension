@@ -29,6 +29,7 @@ This is the Android Adobe Mobile Extension of Adjust™. You can read more about
 ### Additional features
 
    * [Attribution callback](#af-attribution-callback)
+   * [Deferred deep linking callback](#af-deferred-deep-linking-callback)
 
 
 ## Quick start
@@ -271,6 +272,31 @@ AdjustAdobeExtension.registerExtension(config);
 
 The listener function is called after the SDK receives the final attribution data. Within the listener function, you'll have access to the `attribution` parameter. 
 
+### <a id="af-deferred-deep-linking-callback"></a>Deferred deep linking callback
+
+The Adjust SDK opens the deferred deep link by default. There is no extra configuration needed.  But if you wish to control whether the Adjust SDK will open the deferred deep link or not, you can do it with a callback method in the config object.
+
+With the extension config instance, add the deferred deep linking callback before you start the SDK:
+
+```java
+AdjustAdobeExtensionConfig config = new AdjustAdobeExtensionConfig(environment);
+
+config.setOnDeeplinkResponseListener(new OnDeeplinkResponseListener() {
+    @Override
+    public boolean launchReceivedDeeplink(Uri deeplink) {
+        // ...
+        if (shouldAdjustSdkLaunchTheDeeplink(deeplink)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+});
+
+AdjustAdobeExtension.registerExtension(config);
+```
+
+After the Adjust SDK receives the deep link information from our backend, the SDK will deliver you its content via the listener and expect the boolean return value from you. This return value represents your decision on whether or not the Adjust SDK should launch the activity to which you have assigned the scheme name from the deeplink.
 
 [dashboard]:  http://adjust.com
 [adjust.com]: http://adjust.com
