@@ -1,3 +1,13 @@
+### Version 1.0.1 (14th April 2021)
+#### Updated
+- Updated Native Android SDK dependency to version 4.27.0.
+- Updated gradle script for publishing to maven central.
+
+#### Native Android SDK
+- [Android@v4.27.0][android_sdk_v4.27.0]
+
+---
+
 ### Version 1.0.0 (3rd December 2020)
 #### Added
 - Official release of the Adjust Android SDK Adobe Extension.

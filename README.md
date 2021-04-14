@@ -47,9 +47,9 @@ These are the minimum required steps to integrate the Adjust Extension in your A
 If you are using [`Maven`][maven], add the following to your `build.gradle` file:
 
 ```gradle
-implementation 'com.adjust.adobeextension:adobeextension:1.0.0'
-implementation 'com.adjust.sdk:adjust-android:4.24.1'
-implementation 'com.android.installreferrer:installreferrer:2.1'
+implementation 'com.adjust.adobeextension:adobeextension:1.0.1'
+implementation 'com.adjust.sdk:adjust-android:4.27.0'
+implementation 'com.android.installreferrer:installreferrer:2.2'
 ```
 
 ### <a id="qs-gps"></a>Add Google Play Services
