@@ -1,7 +1,7 @@
-### Version 1.0.1 (14th April 2021)
+### Version 1.0.1 (20th April 2021)
 #### Updated
-- Updated Native Android SDK dependency to version 4.27.0.
-- Updated gradle script for publishing to maven central.
+- Updated native Android SDK dependency to version 4.27.0.
+- Updated gradle script for publishing to Maven central.
 
 #### Native Android SDK
 - [Android@v4.27.0][android_sdk_v4.27.0]
@@ -25,3 +25,4 @@
 - [Android@v4.24.1][android_sdk_v4.24.1]
 
 [android_sdk_v4.24.1]: https://github.com/adjust/android_sdk/tree/v4.24.1
+[android_sdk_v4.27.0]: https://github.com/adjust/android_sdk/tree/v4.27.0
