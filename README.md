@@ -47,8 +47,8 @@ These are the minimum required steps to integrate the Adjust Extension in your A
 If you are using [`Maven`][maven], add the following to your `build.gradle` file:
 
 ```gradle
-implementation 'com.adjust.adobeextension:adobeextension:1.0.1'
-implementation 'com.adjust.sdk:adjust-android:4.27.0'
+implementation 'com.adjust.adobeextension:adobeextension:1.0.2'
+implementation 'com.adjust.sdk:adjust-android:4.29.1'
 implementation 'com.android.installreferrer:installreferrer:2.2'
 ```
 
@@ -57,10 +57,10 @@ implementation 'com.android.installreferrer:installreferrer:2.2'
 Apps in the Google Play Store must use the [Google Advertising ID][google-ad-id] to uniquely identify devices. To enable the Google Advertising ID for our SDK, you must integrate [Google Play Services][google-play-services]. If you haven't done this yet, please add dependency to the Google Play Services library by adding the following dependecy to your `dependencies` block of app's `build.gradle` file:
 
 ```gradle
-implementation 'com.google.android.gms:play-services-ads-identifier:17.0.0'
+implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
 ```
 
-**Note**: The Adjust Extension is not tied to any specific version of the `play-services-analytics` part of the Google Play Services library. You can use the latest version of the library, or any other version you need.
+**Note**: The Adjust Extension is not tied to any specific version of the `play-services-ads-identifier` part of the Google Play Services library. You can use the latest version of the library, or any other version you need.
 
 ### <a id="qs-permissions"></a>Add permissions
 
@@ -71,11 +71,15 @@ The Adjust Extension requires the following permissions. Please add them to your
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 ```
 
-If you are **not targeting the Google Play Store**, you must also add the following permission:
+#### <a id="gps-adid-permission"></a>Add permission to gather Google advertising ID
+
+If you are targeting Android 12 and above (API level 31), you need to add the `com.google.android.gms.AD_ID` permission to read the device's advertising ID. Add the following line to your `AndroidManifest.xml` to enable the permission.
 
 ```xml
-<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+<uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
 ```
+
+For more information, see [Google's `AdvertisingIdClient.Info` documentation](https://developers.google.com/android/reference/com/google/android/gms/ads/identifier/AdvertisingIdClient.Info#public-string-getid).
 
 ### <a id="qs-proguard"></a>Proguard settings
 
@@ -111,7 +115,7 @@ In order to correctly attribute an app install to its source, Adjust needs infor
 In order to support the Google Play Referrer API in your app, please make sure that you have followed our chapter on [adding the Extension to your project](#qs-add-extension) correctly and that you have following line added to your `build.gradle` file:
 
 ```
-implementation 'com.android.installreferrer:installreferrer:2.1'
+implementation 'com.android.installreferrer:installreferrer:2.2'
 ```
 
 Please follow the directions for your [Proguard settings](#qs-proguard) carefully. Confirm that you have added all the rules mentioned in it, especially the one needed for this feature:
