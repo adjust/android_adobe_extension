@@ -1,3 +1,13 @@
+### Version 1.0.2 (25th February 2022)
+#### Updated
+- Updated native Android SDK dependency to version 4.29.1.
+- Updated gradle version.
+
+#### Native Android SDK
+- [Android@v4.29.1][android_sdk_v4.29.1]
+
+---
+
 ### Version 1.0.1 (20th April 2021)
 #### Updated
 - Updated native Android SDK dependency to version 4.27.0.
@@ -26,3 +36,4 @@
 
 [android_sdk_v4.24.1]: https://github.com/adjust/android_sdk/tree/v4.24.1
 [android_sdk_v4.27.0]: https://github.com/adjust/android_sdk/tree/v4.27.0
+[android_sdk_v4.29.1]: https://github.com/adjust/android_sdk/tree/v4.29.1
