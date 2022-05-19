@@ -41,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
         String action = "Track callback event";
         Map<String, String> contextData= new HashMap<String, String>();
         contextData.put("adj.eventToken", "34vgg9");
-        contextData.put("adj.callback.key1", "value1");
-        contextData.put("adj.callback.key2", "value2");
+        contextData.put("adj.event.callback.key1", "value1");
+        contextData.put("adj.event.callback.key2", "value2");
 
         MobileCore.trackAction(action, contextData);
     }
@@ -51,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
         String action = "Track partner event";
         Map<String, String> contextData= new HashMap<String, String>();
         contextData.put("adj.eventToken", "w788qs");
-        contextData.put("adj.partner.key1", "value1");
-        contextData.put("adj.partner.key2", "value2");
+        contextData.put("adj.event.partner.key1", "value1");
+        contextData.put("adj.event.partner.key2", "value2");
 
         MobileCore.trackAction(action, contextData);
     }
