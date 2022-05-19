@@ -17,7 +17,9 @@ import com.adobe.marketing.mobile.MobileCore;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_EVENT_CALLBACK_PARAM_KEY;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_EVENT_CURRENCY_KEY;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_EVENT_PARTNER_PARAM_KEY;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_EVENT_REVENUE_KEY;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_EVENT_TOKEN_KEY;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
@@ -134,6 +136,18 @@ class AdjustSdkApiHandler {
 
         if (revenue != null && currency != null) {
             adjustEvent.setRevenue(revenue, currency);
+        }
+
+        for (String key: contextData.keySet()) {
+            if (key.startsWith(ADJUST_EVENT_CALLBACK_PARAM_KEY)) {
+                String callbackParamKey = key.substring(ADJUST_EVENT_CALLBACK_PARAM_KEY.length());
+                String callbackParamValue = contextData.get(key);
+                adjustEvent.addCallbackParameter(callbackParamKey, callbackParamValue);
+            } else if (key.startsWith(ADJUST_EVENT_PARTNER_PARAM_KEY)) {
+                String callbackParamKey = key.substring(ADJUST_EVENT_PARTNER_PARAM_KEY.length());
+                String callbackParamValue = contextData.get(key);
+                adjustEvent.addPartnerParameter(callbackParamKey, callbackParamValue);
+            }
         }
 
         Adjust.trackEvent(adjustEvent);

@@ -14,6 +14,8 @@ class AdjustAdobeExtensionConstants {
     static final String ADJUST_EVENT_TOKEN_KEY = "adj.eventToken";
     static final String ADJUST_EVENT_CURRENCY_KEY = "adj.currency";
     static final String ADJUST_EVENT_REVENUE_KEY = "adj.revenue";
+    static final String ADJUST_EVENT_CALLBACK_PARAM_KEY = "adj.callback.";
+    static final String ADJUST_EVENT_PARTNER_PARAM_KEY = "adj.partner.";
 
     static final String ADJUST_APP_TOKEN_KEY = "adjustAppToken";
     static final String ADJUST_TRACK_ATTRIBUTION_KEY = "adjustTrackAttribution";
