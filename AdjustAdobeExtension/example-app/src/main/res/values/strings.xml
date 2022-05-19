@@ -2,4 +2,6 @@
     <string name="app_name">Adjust Adobe Extension Example App</string>
     <string name="track_simple_event">Track Simple Event</string>
     <string name="track_revenue_event">Track Revenue Event</string>
+    <string name="track_callback_event">Track Callback Event</string>
+    <string name="track_partner_event">Track Partner Event</string>
 </resources>

@@ -36,4 +36,24 @@ public class MainActivity extends AppCompatActivity {
 
         MobileCore.trackAction(action, contextData);
     }
+
+    public void trackCallbackEvent(View view) {
+        String action = "Track callback event";
+        Map<String, String> contextData= new HashMap<String, String>();
+        contextData.put("adj.eventToken", "34vgg9");
+        contextData.put("adj.callback.key1", "value1");
+        contextData.put("adj.callback.key2", "value2");
+
+        MobileCore.trackAction(action, contextData);
+    }
+
+    public void trackPartnerEvent(View view) {
+        String action = "Track partner event";
+        Map<String, String> contextData= new HashMap<String, String>();
+        contextData.put("adj.eventToken", "w788qs");
+        contextData.put("adj.partner.key1", "value1");
+        contextData.put("adj.partner.key2", "value2");
+
+        MobileCore.trackAction(action, contextData);
+    }
 }
