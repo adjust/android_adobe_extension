@@ -17,11 +17,13 @@ import com.adobe.marketing.mobile.MobileCore;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_ACTION_SET_PUSH_TOKEN;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_EVENT_CALLBACK_PARAM_KEY;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_EVENT_CURRENCY_KEY;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_EVENT_PARTNER_PARAM_KEY;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_EVENT_REVENUE_KEY;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_EVENT_TOKEN_KEY;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_PUSH_TOKEN_PARAM_KEY;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
 
 /**
@@ -104,6 +106,40 @@ class AdjustSdkApiHandler {
         }
 
         sdkInitialised = true;
+    }
+
+    /**
+     * Method to process events for Adjust
+     * @param action action to take for the event
+     * @param contextData map with event params as key-value
+     */
+    protected void processEvent(final String action, final Map<String, String> contextData) {
+        if (action != null && action.equalsIgnoreCase(ADJUST_ACTION_SET_PUSH_TOKEN)) {
+            setPushToken(contextData);
+        } else {
+            trackEvent(contextData);
+        }
+    }
+
+    /**
+     * Method to set user's push notifications token
+     * @param contextData map with params as key-value
+     */
+    protected void setPushToken(final Map<String, String> contextData) {
+        if (contextData == null) {
+            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
+                           "Cannot set push token, contextData is null");
+            return;
+        }
+
+        String pushToken = contextData.get(ADJUST_PUSH_TOKEN_PARAM_KEY);
+        if (pushToken == null) {
+            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
+                           "Cannot set, push token is null");
+            return;
+        }
+
+        Adjust.setPushToken(pushToken, application.getApplicationContext());
     }
 
     /**

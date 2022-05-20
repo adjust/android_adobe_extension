@@ -20,6 +20,7 @@ import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADOBE_MODU
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_CONTEXT_DATA_KEY;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_SOURCE_ADOBE_REQUEST_CONTENT;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_SOURCE_ADOBE_SHARED_STATE;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_ACTION_KEY;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_TYPE_ADOBE_GENERIC_TRACK;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_TYPE_ADOBE_HUB;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EXTENSION_NAME;
@@ -197,13 +198,25 @@ class AdjustAdobeExtensionInternal
                 if (eventData == null) {
                     continue;
                 }
+
+                Object actionObject = eventData.get(EVENT_ACTION_KEY);
+                String action = null;
+                if (actionObject instanceof String) {
+                    action = (String) actionObject;
+                }
+
                 Object contextDataObject = eventData.get(EVENT_CONTEXT_DATA_KEY);
-                if (!(contextDataObject instanceof Map)) {
+                Map<String, String> contextData = null;
+
+                if (contextDataObject instanceof Map) {
+                    contextData = (Map<String, String>)contextDataObject;
+                }
+
+                if (action == null && contextData == null) {
                     continue;
                 }
-                Map<String, String> contextData = (Map<String, String>)contextDataObject;
 
-                adjustSdkApiHandler.trackEvent(contextData);
+                adjustSdkApiHandler.processEvent(action, contextData);
             }
         }
     }
