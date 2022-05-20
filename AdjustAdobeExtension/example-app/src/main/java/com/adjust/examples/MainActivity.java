@@ -56,4 +56,14 @@ public class MainActivity extends AppCompatActivity {
 
         MobileCore.trackAction(action, contextData);
     }
+
+    public void setPushToken(View view) {
+        String action = "adj.setPushToken";
+        Map<String, String> contextData= new HashMap<String, String>();
+        contextData.put("adj.pushToken", "your_push_token");
+
+        MobileCore.trackAction(action, contextData);
+
+        MobileCore.setPushIdentifier("your_push_token");
+    }
 }
