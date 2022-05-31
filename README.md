@@ -26,10 +26,18 @@ This is the Android Adobe Mobile Extension of Adjust™. You can read more about
    * [Track event](#et-tracking)
    * [Track revenue](#et-revenue)
 
+### Custom parameters
+
+   * [Custom parameters overview](#cp)
+   * [Event parameters](#cp-event-parameters)
+      * [Event callback parameters](#cp-event-callback-parameters)
+      * [Event partner parameters](#cp-event-partner-parameters)
+
 ### Additional features
 
    * [Attribution callback](#af-attribution-callback)
    * [Deferred deep linking callback](#af-deferred-deep-linking-callback)
+   * [Push token (uninstall tracking)](#af-push-token)
 
 
 ## Quick start
@@ -227,7 +235,7 @@ Build and run your Android app. In your `LogCat` viewer, set the filter `tag:Adj
 You can use Adobe `MobileCore.trackAction` API for [`event tracking`][event-tracking]. Suppose you want to track every tap on a button. To do so, you'll create a new event token in your [dashboard]. Let's say that the event token is `abc123`. In your button's `onClick` method, add the following lines to track the click:
 
 ```java
-String action = "Track button click";
+String action = "adj.trackEvent";
 Map<String, String> contextData= new HashMap<String, String>();
 contextData.put("adj.eventToken", "abc123");
 
@@ -241,7 +249,7 @@ MobileCore.trackAction(action, contextData);
 If your users can generate revenue by tapping on advertisements or making in-app purchases, you can track those revenues too with events. Let's say a tap is worth one Euro cent. You can track the revenue event like this:
 
 ```java
-String action = "Track revenue event";
+String action = "adj.trackEvent";
 Map<String, String> contextData= new HashMap<String, String>();
 contextData.put("adj.eventToken", "abc123");
 contextData.put("adj.revenue", "0.01");
@@ -250,6 +258,56 @@ contextData.put("adj.currency", "EUR");
 
 **Note**: The key used are prefixed with **adj.** 
 
+## Custom parameters
+
+### <a id="cp"></a>Custom parameters overview
+
+In addition to the data points the Adjust SDK collects by default, you can use the extension to track and add as many custom values as you need (user IDs, product IDs, etc.) to the event or session. Custom parameters are only available as raw data and will **not** appear in your Adjust dashboard.
+
+You should use **callback parameters** for the values you collect for your own internal use, and **partner parameters** for those you share with external partners. If a value (e.g. product ID) is tracked both for internal use and external partner use, we recommend you track it with both callback and partner parameters.
+
+
+### <a id="cp-event-parameters"></a>Event parameters
+
+### <a id="cp-event-callback-parameters"></a>Event callback parameters
+
+You can register a callback URL for your events in your [dashboard]. We will send a GET request to that URL whenever the event is tracked. You can add callback parameters to that event by adding them as key value pair to the context data map before tracking it. We will then append these parameters to your callback URL.
+
+For example, if you've registered the URL `http://www.example.com/callback`, then you would track an event like this:
+
+```java
+String action = "adj.trackEvent";
+Map<String, String> contextData= new HashMap<String, String>();
+contextData.put("adj.eventToken", "abc123");
+contextData.put("adj.event.callback.key1", "value1");
+contextData.put("adj.event.callback.key2", "value2");
+```
+
+In this case we would track the event and send a request to:
+
+```
+http://www.example.com/callback?key1=value1&key2=value2
+```
+
+Adjust supports a variety of placeholders, for example `{gps_adid}`, which can be used as parameter values. In the resulting callback, we would replace the placeholder (in this case)  with the Google Play Services ID of the current device. Please note that we don't store any of your custom parameters. We **only** append them to your callbacks. If you haven't registered a callback for an event, we will not even read these parameters.
+
+You can read more about URL callbacks (including a full list of available values) in our [callbacks guide][callbacks-guide].
+
+### <a id="cp-event-partner-parameters"></a>Event partner parameters
+
+When your parameters are activated in the Adjust dashboard, you have the option to transmit them to your network partners.
+
+This works similarly to the callback parameters mentioned above;
+
+```java
+String action = "adj.trackEvent";
+Map<String, String> contextData= new HashMap<String, String>();
+contextData.put("adj.eventToken", "abc123");
+contextData.put("adj.event.partner.key1", "value1");
+contextData.put("adj.event.partner.key2", "value2");
+```
+
+You can read more about special partners and these integrations in our [guide to special partners][special-partners].
 
 ## Additional features
 
@@ -302,6 +360,18 @@ AdjustAdobeExtension.registerExtension(config);
 
 After the Adjust SDK receives the deep link information from our backend, the SDK will deliver you its content via the listener and expect the boolean return value from you. This return value represents your decision on whether or not the Adjust SDK should launch the activity to which you have assigned the scheme name from the deeplink.
 
+### <a id="af-push-token"></a>Push token (uninstall tracking)
+
+Push tokens are used for Audience Builder and client callbacks; they are also required for uninstall and reinstall tracking.
+
+To send us the push notification token, add the following call to Adjust once you have obtained your token (or whenever its value changes):
+
+```java
+String action = "adj.setPushToken";
+Map<String, String> contextData= new HashMap<String, String>();
+contextData.put("adj.pushToken", "your_push_token");
+```
+
 [dashboard]:  http://adjust.com
 [adjust.com]: http://adjust.com
 
@@ -310,6 +380,8 @@ After the Adjust SDK receives the deep link information from our backend, the SD
 [maven]:                          http://maven.org
 [google-ad-id]:                   https://support.google.com/googleplay/android-developer/answer/6048248?hl=en
 [event-tracking]:                 https://docs.adjust.com/en/event-tracking
+[callbacks-guide]:                https://docs.adjust.com/en/callbacks
+[special-partners]:               https://docs.adjust.com/en/special-partners
 [attribution-data]:               https://github.com/adjust/sdks/blob/master/doc/attribution-data.md
 [android-application]:            http://developer.android.com/reference/android/app/Application.html
 [google-play-services]:           http://developer.android.com/google/play-services/setup.html
