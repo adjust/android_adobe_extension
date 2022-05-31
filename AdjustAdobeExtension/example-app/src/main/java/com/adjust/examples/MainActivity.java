@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void trackSimpleEvent(View view) {
-        String action = "Track simple event";
+        String action = "adj.trackEvent";
         Map<String, String> contextData= new HashMap<String, String>();
         contextData.put("adj.eventToken", "g3mfiw");
 
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void trackRevenueEvent(View view) {
-        String action = "Track revenue event";
+        String action = "adj.trackEvent";
         Map<String, String> contextData= new HashMap<String, String>();
         contextData.put("adj.eventToken", "a4fd35");
         contextData.put("adj.revenue", "0.01");
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void trackCallbackEvent(View view) {
-        String action = "Track callback event";
+        String action = "adj.trackEvent";
         Map<String, String> contextData= new HashMap<String, String>();
         contextData.put("adj.eventToken", "34vgg9");
         contextData.put("adj.event.callback.key1", "value1");
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void trackPartnerEvent(View view) {
-        String action = "Track partner event";
+        String action = "adj.trackEvent";
         Map<String, String> contextData= new HashMap<String, String>();
         contextData.put("adj.eventToken", "w788qs");
         contextData.put("adj.event.partner.key1", "value1");
