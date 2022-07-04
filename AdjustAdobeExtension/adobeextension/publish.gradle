@@ -4,7 +4,7 @@ apply plugin: 'signing'
 // init
 def libGroupId = 'com.adjust.adobeextension'
 def libArtifactId = 'adobeextension'
-def libVersion = '1.0.2'
+def libVersion = '1.1.0'
 def libName = 'Adjust Extension for Adobe Experience SDK'
 def libDesc = 'This is the Android Adobe Mobile Extension of Adjust.'
 def libUrl = 'https://github.com/adjust/android_adobe_extension'
