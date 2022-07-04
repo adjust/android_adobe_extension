@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         Map<String, String> contextData= new HashMap<String, String>();
         contextData.put("adj.eventToken", "g3mfiw");
 
-        MobileCore.trackState(action, contextData);
+        MobileCore.trackAction(action, contextData);
     }
 
     public void trackRevenueEvent(View view) {
