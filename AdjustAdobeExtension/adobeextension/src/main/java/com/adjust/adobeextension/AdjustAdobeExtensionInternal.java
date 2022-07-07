@@ -14,12 +14,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_APP_TOKEN_KEY;
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_TRACK_ATTRIBUTION_KEY;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_KEY_APP_TOKEN;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_KEY_TRACK_ATTRIBUTION;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADOBE_MODULE_CONFIGURATION;
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_CONTEXT_DATA_KEY;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_KEY_CONTEXT_DATA;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_SOURCE_ADOBE_REQUEST_CONTENT;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_SOURCE_ADOBE_SHARED_STATE;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_KEY_ACTION;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_TYPE_ADOBE_GENERIC_TRACK;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_TYPE_ADOBE_HUB;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EXTENSION_NAME;
@@ -150,8 +151,8 @@ class AdjustAdobeExtensionInternal
             return;
         }
 
-        Object appTokenObject = sharedEventState.get(ADJUST_APP_TOKEN_KEY);
-        Object shouldTrackAttributionObject = sharedEventState.get(ADJUST_TRACK_ATTRIBUTION_KEY);
+        Object appTokenObject = sharedEventState.get(ADJUST_KEY_APP_TOKEN);
+        Object shouldTrackAttributionObject = sharedEventState.get(ADJUST_KEY_TRACK_ATTRIBUTION);
 
         if (!(appTokenObject instanceof String)
                 || !(shouldTrackAttributionObject instanceof Boolean))
@@ -197,13 +198,25 @@ class AdjustAdobeExtensionInternal
                 if (eventData == null) {
                     continue;
                 }
-                Object contextDataObject = eventData.get(EVENT_CONTEXT_DATA_KEY);
-                if (!(contextDataObject instanceof Map)) {
+
+                Object actionObject = eventData.get(EVENT_KEY_ACTION);
+                String action = null;
+                if (actionObject instanceof String) {
+                    action = (String) actionObject;
+                }
+
+                Object contextDataObject = eventData.get(EVENT_KEY_CONTEXT_DATA);
+                Map<String, String> contextData = null;
+
+                if (contextDataObject instanceof Map) {
+                    contextData = (Map<String, String>)contextDataObject;
+                }
+
+                if (action == null && contextData == null) {
                     continue;
                 }
-                Map<String, String> contextData = (Map<String, String>)contextDataObject;
 
-                adjustSdkApiHandler.trackEvent(contextData);
+                adjustSdkApiHandler.processEvent(action, contextData);
             }
         }
     }

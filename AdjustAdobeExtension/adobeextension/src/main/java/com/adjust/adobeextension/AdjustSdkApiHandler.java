@@ -17,9 +17,13 @@ import com.adobe.marketing.mobile.MobileCore;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_EVENT_CURRENCY_KEY;
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_EVENT_REVENUE_KEY;
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_EVENT_TOKEN_KEY;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_ACTION_SET_PUSH_TOKEN;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_KEY_EVENT_CALLBACK_PARAM;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_KEY_EVENT_CURRENCY;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_KEY_EVENT_PARTNER_PARAM;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_KEY_EVENT_REVENUE;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_KEY_EVENT_TOKEN;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_KEY_PUSH_TOKEN_PARAM;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
 
 /**
@@ -105,6 +109,40 @@ class AdjustSdkApiHandler {
     }
 
     /**
+     * Method to process events for Adjust
+     * @param action action to take for the event
+     * @param contextData map with event params as key-value
+     */
+    protected void processEvent(final String action, final Map<String, String> contextData) {
+        if (action != null && action.equalsIgnoreCase(ADJUST_ACTION_SET_PUSH_TOKEN)) {
+            setPushToken(contextData);
+        } else {
+            trackEvent(contextData);
+        }
+    }
+
+    /**
+     * Method to set user's push notifications token
+     * @param contextData map with params as key-value
+     */
+    protected void setPushToken(final Map<String, String> contextData) {
+        if (contextData == null) {
+            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
+                           "Cannot set push token, contextData is null");
+            return;
+        }
+
+        String pushToken = contextData.get(ADJUST_KEY_PUSH_TOKEN_PARAM);
+        if (pushToken == null) {
+            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
+                           "Cannot set, push token is null");
+            return;
+        }
+
+        Adjust.setPushToken(pushToken, application.getApplicationContext());
+    }
+
+    /**
      * Method to track Adjust events
      * @param contextData map with event params as key-value
      */
@@ -115,7 +153,7 @@ class AdjustSdkApiHandler {
             return;
         }
 
-        String eventToken = contextData.get(ADJUST_EVENT_TOKEN_KEY);
+        String eventToken = contextData.get(ADJUST_KEY_EVENT_TOKEN);
         if (eventToken == null) {
             MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
                            "Cannot track event, eventToken is null");
@@ -126,14 +164,26 @@ class AdjustSdkApiHandler {
 
         Double revenue = null;
         try {
-            revenue = Double.parseDouble(contextData.get(ADJUST_EVENT_REVENUE_KEY));
+            revenue = Double.parseDouble(contextData.get(ADJUST_KEY_EVENT_REVENUE));
         } catch (Exception ignored) {
         }
 
-        String currency = contextData.get(ADJUST_EVENT_CURRENCY_KEY);
+        String currency = contextData.get(ADJUST_KEY_EVENT_CURRENCY);
 
         if (revenue != null && currency != null) {
             adjustEvent.setRevenue(revenue, currency);
+        }
+
+        for (String key: contextData.keySet()) {
+            if (key.startsWith(ADJUST_KEY_EVENT_CALLBACK_PARAM)) {
+                String callbackParamKey = key.substring(ADJUST_KEY_EVENT_CALLBACK_PARAM.length());
+                String callbackParamValue = contextData.get(key);
+                adjustEvent.addCallbackParameter(callbackParamKey, callbackParamValue);
+            } else if (key.startsWith(ADJUST_KEY_EVENT_PARTNER_PARAM)) {
+                String callbackParamKey = key.substring(ADJUST_KEY_EVENT_PARTNER_PARAM.length());
+                String callbackParamValue = contextData.get(key);
+                adjustEvent.addPartnerParameter(callbackParamKey, callbackParamValue);
+            }
         }
 
         Adjust.trackEvent(adjustEvent);

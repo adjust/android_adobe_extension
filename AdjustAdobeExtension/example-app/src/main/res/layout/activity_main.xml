@@ -23,4 +23,28 @@
         android:onClick="trackRevenueEvent"
         />
 
+    <Button
+        android:id="@+id/btn_track_callback_event"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/track_callback_event"
+        android:onClick="trackCallbackEvent"
+        />
+
+    <Button
+        android:id="@+id/btn_track_partner_event"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/track_partner_event"
+        android:onClick="trackPartnerEvent"
+        />
+
+    <Button
+        android:id="@+id/btn_set_push_token"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/set_push_token"
+        android:onClick="setPushToken"
+        />
+
 </LinearLayout>
