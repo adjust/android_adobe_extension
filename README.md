@@ -254,6 +254,8 @@ Map<String, String> contextData= new HashMap<String, String>();
 contextData.put("adj.eventToken", "abc123");
 contextData.put("adj.revenue", "0.01");
 contextData.put("adj.currency", "EUR");
+
+MobileCore.trackAction(action, contextData);
 ```
 
 **Note**: The key used are prefixed with **adj.** 
@@ -281,6 +283,8 @@ Map<String, String> contextData= new HashMap<String, String>();
 contextData.put("adj.eventToken", "abc123");
 contextData.put("adj.event.callback.key1", "value1");
 contextData.put("adj.event.callback.key2", "value2");
+
+MobileCore.trackAction(action, contextData);
 ```
 
 In this case we would track the event and send a request to:
@@ -305,6 +309,8 @@ Map<String, String> contextData= new HashMap<String, String>();
 contextData.put("adj.eventToken", "abc123");
 contextData.put("adj.event.partner.key1", "value1");
 contextData.put("adj.event.partner.key2", "value2");
+
+MobileCore.trackAction(action, contextData);
 ```
 
 You can read more about special partners and these integrations in our [guide to special partners][special-partners].
@@ -370,6 +376,8 @@ To send us the push notification token, add the following call to Adjust once yo
 String action = "adj.setPushToken";
 Map<String, String> contextData= new HashMap<String, String>();
 contextData.put("adj.pushToken", "your_push_token");
+
+MobileCore.trackAction(action, contextData);
 ```
 
 [dashboard]:  http://adjust.com
