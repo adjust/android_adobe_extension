@@ -1,22 +1,5 @@
 package com.adjust.adobeextension;
 
-import android.app.Activity;
-import android.app.Application;
-import android.content.Context;
-import android.os.Bundle;
-
-import com.adjust.sdk.Adjust;
-import com.adjust.sdk.AdjustAttribution;
-import com.adjust.sdk.AdjustConfig;
-import com.adjust.sdk.AdjustEvent;
-import com.adjust.sdk.LogLevel;
-import com.adjust.sdk.OnAttributionChangedListener;
-import com.adobe.marketing.mobile.LoggingMode;
-import com.adobe.marketing.mobile.MobileCore;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_ACTION_SET_PUSH_TOKEN;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_KEY_EVENT_CALLBACK_PARAM;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_KEY_EVENT_CURRENCY;
@@ -25,6 +8,23 @@ import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_KEY
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_KEY_EVENT_TOKEN;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_KEY_PUSH_TOKEN_PARAM;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
+
+import android.app.Activity;
+import android.app.Application;
+import android.content.Context;
+import android.os.Bundle;
+import android.util.Log;
+
+import com.adjust.sdk.Adjust;
+import com.adjust.sdk.AdjustAttribution;
+import com.adjust.sdk.AdjustConfig;
+import com.adjust.sdk.AdjustEvent;
+import com.adjust.sdk.LogLevel;
+import com.adjust.sdk.OnAttributionChangedListener;
+import com.adobe.marketing.mobile.MobileCore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Internal class to interface with Adjust Sdk.
@@ -71,28 +71,24 @@ class AdjustSdkApiHandler {
      */
     protected void initSdk(final String appToken, final boolean shouldTrackAttribution) {
         if (sdkInitialised) {
-            MobileCore.log(LoggingMode.WARNING, LOG_TAG,
-                    "Cannot initialise SDK, already initialised");
+            Log.w(LOG_TAG, "Cannot initialise SDK, already initialised");
             return;
         }
 
         Application application = MobileCore.getApplication();
         if (application == null) {
-            MobileCore.log(LoggingMode.ERROR, LOG_TAG,
-                           "Cannot initialise SDK, application object is null");
+            Log.e(LOG_TAG, "Cannot initialise SDK, application object is null");
             return;
         }
 
         if (appToken == null) {
-            MobileCore.log(LoggingMode.ERROR, LOG_TAG,
-                           "Cannot initialise SDK, appToken is null or empty");
+            Log.e(LOG_TAG, "Cannot initialise SDK, appToken is null or empty");
         }
 
         AdjustAdobeExtensionConfig adjustAdobeExtensionConfig =
                 AdjustAdobeExtension.getAdjustAdobeExtensionConfig();
         if (adjustAdobeExtensionConfig == null) {
-            MobileCore.log(LoggingMode.ERROR, LOG_TAG,
-                           "Cannot initialise SDK, adjust extension config is null");
+            Log.e(LOG_TAG, "Cannot initialise SDK, adjust extension config is null");
         }
 
         AdjustConfig adjustConfig = getAdjustConfig(application.getApplicationContext(),
@@ -127,15 +123,13 @@ class AdjustSdkApiHandler {
      */
     protected void setPushToken(final Map<String, String> contextData) {
         if (contextData == null) {
-            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
-                           "Cannot set push token, contextData is null");
+            Log.d(LOG_TAG, "Cannot set push token, contextData is null");
             return;
         }
 
         String pushToken = contextData.get(ADJUST_KEY_PUSH_TOKEN_PARAM);
         if (pushToken == null) {
-            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
-                           "Cannot set, push token is null");
+            Log.d(LOG_TAG, "Cannot set, push token is null");
             return;
         }
 
@@ -148,15 +142,13 @@ class AdjustSdkApiHandler {
      */
     protected void trackEvent(final Map<String, String> contextData) {
         if (contextData == null) {
-            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
-                           "Cannot track event, contextData is null");
+            Log.d(LOG_TAG, "Cannot track event, contextData is null");
             return;
         }
 
         String eventToken = contextData.get(ADJUST_KEY_EVENT_TOKEN);
         if (eventToken == null) {
-            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
-                           "Cannot track event, eventToken is null");
+            Log.d(LOG_TAG, "Cannot track event, eventToken is null");
             return;
         }
 
@@ -210,28 +202,24 @@ class AdjustSdkApiHandler {
      */
     protected boolean registerActivityLifecycleCallbacks(final Context context) {
         if (application != null) {
-            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
-                           "Cannot register activity lifecycle callbacks more than once");
+            Log.d(LOG_TAG, "Cannot register activity lifecycle callbacks more than once");
             return false;
         }
 
         if (context == null) {
-            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
-                           "Cannot register activity lifecycle callbacks without context");
+            Log.d(LOG_TAG, "Cannot register activity lifecycle callbacks without context");
             return false;
         }
 
         final Context applicationContext = context.getApplicationContext();
 
         if (!(applicationContext instanceof Application)) {
-            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
-                           "Cannot register activity lifecycle callbacks "
+            Log.d(LOG_TAG, "Cannot register activity lifecycle callbacks "
                            + "without application context as Application");
             return false;
         }
 
-        MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
-                       "Registering activity lifecycle callbacks");
+        Log.d(LOG_TAG, "Registering activity lifecycle callbacks");
 
 
         application = (Application) applicationContext;

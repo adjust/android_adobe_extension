@@ -1,11 +1,8 @@
 package com.adjust.adobeextension;
 
-import com.adobe.marketing.mobile.ExtensionError;
-import com.adobe.marketing.mobile.ExtensionErrorCallback;
-import com.adobe.marketing.mobile.LoggingMode;
-import com.adobe.marketing.mobile.MobileCore;
-
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
+
+import android.util.Log;
 
 /**
  * The main interface to Adjust Adobe Extension.
@@ -13,6 +10,8 @@ import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
  * See the README for details.
  */
 public class AdjustAdobeExtension {
+
+    public static final Class<AdjustAdobeExtensionInternal> EXTENSION = AdjustAdobeExtensionInternal.class;
 
     /**
      * Adjust Sdk Config passed to Adobe Adjust Extension.
@@ -30,34 +29,20 @@ public class AdjustAdobeExtension {
      * Method used to register Adjust Adobe Extension.
      * @param config extension config to initialize Adjust Sdk
      */
-    public static void registerExtension(final AdjustAdobeExtensionConfig config) {
+    public static void setConfiguration(final AdjustAdobeExtensionConfig config) {
         if (config == null) {
-            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
-                    "AdjustAdobeExtensionConfig is null");
+            Log.d(LOG_TAG, "AdjustAdobeExtensionConfig is null");
             return;
         }
 
         if (config.getEnvironment() == null) {
-            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
-                    "AdjustAdobeExtensionConfig environment is null");
+            Log.d(LOG_TAG, "AdjustAdobeExtensionConfig environment is null");
             return;
         }
 
-        ExtensionErrorCallback<ExtensionError> errorCallback =
-                new ExtensionErrorCallback<ExtensionError>() {
-            @Override
+        adjustAdobeExtensionConfig = config;
 
-            public void error(final ExtensionError extensionError) {
-                MobileCore.log(LoggingMode.ERROR, LOG_TAG,
-                        "Failed to register AdjustAdobeExtension" +
-                                extensionError != null ?
-                                    ", error" + extensionError.getErrorName()
-                                    : " without error");
-            }};
-
-        if (MobileCore.registerExtension(AdjustAdobeExtensionInternal.class, errorCallback)) {
-            adjustAdobeExtensionConfig = config;
-        }
+        Log.d(LOG_TAG, "Adjust Adobe Extension initialized");
     }
 
     /**
