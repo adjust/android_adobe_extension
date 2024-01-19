@@ -33,11 +33,11 @@ public class MainApp extends Application {
         // internally translates to Adjust SDK logging
         MobileCore.setLogLevel(LoggingMode.VERBOSE);
 
-        // configure
-        configureAdjustSdk();
+        // configure Adjust Adobe Extension
+        configureAdjustAdobeExtension();
 
+        // register extensions
         try {
-            // configure and register extensions
             List<Class<? extends Extension>> extensions = Arrays.asList(
                     Analytics.EXTENSION,
                     Identity.EXTENSION,
@@ -54,7 +54,7 @@ public class MainApp extends Application {
 
     }
 
-    private void configureAdjustSdk() {
+    private void configureAdjustAdobeExtension() {
         try {
             MobileCore.configureWithAppID("89645c501ce0/540de252943f/launch-f8d889dd15b6-development");
 
