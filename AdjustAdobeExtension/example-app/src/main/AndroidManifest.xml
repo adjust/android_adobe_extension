@@ -6,8 +6,6 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <uses-sdk tools:overrideLibrary="com.adobe.marketing.mobile" />
-
     <application
         android:name=".MainApp"
         android:allowBackup="true"

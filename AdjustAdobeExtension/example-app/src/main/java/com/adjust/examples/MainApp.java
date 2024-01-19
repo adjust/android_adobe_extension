@@ -10,7 +10,9 @@ import com.adjust.sdk.AdjustAttribution;
 import com.adjust.sdk.OnAttributionChangedListener;
 import com.adjust.sdk.OnDeeplinkResponseListener;
 import com.adobe.marketing.mobile.AdobeCallback;
+import com.adobe.marketing.mobile.Analytics;
 import com.adobe.marketing.mobile.Extension;
+import com.adobe.marketing.mobile.Identity;
 import com.adobe.marketing.mobile.LoggingMode;
 import com.adobe.marketing.mobile.MobileCore;
 
@@ -36,7 +38,10 @@ public class MainApp extends Application {
 
         try {
             // configure and register extensions
-            List<Class<? extends Extension>> extensions = Arrays.asList(AdjustAdobeExtension.EXTENSION);
+            List<Class<? extends Extension>> extensions = Arrays.asList(
+                    Analytics.EXTENSION,
+                    Identity.EXTENSION,
+                    AdjustAdobeExtension.EXTENSION);
             MobileCore.registerExtensions(extensions, new AdobeCallback<Object>() {
                 @Override
                 public void call(Object o) {
