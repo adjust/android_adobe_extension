@@ -57,6 +57,7 @@ If you are using [`Maven`][maven], add the following to your `build.gradle` file
 ```gradle
 implementation 'com.adjust.adobeextension:adobeextension:2.0.0'
 implementation 'com.adjust.sdk:adjust-android:4.38.0'
+implementation 'com.adobe.marketing.mobile:core:2.6.1'
 implementation 'com.android.installreferrer:installreferrer:2.2'
 ```
 
@@ -188,6 +189,7 @@ public class MainApp extends Application {
             // register the Adjust SDK extension
             AdjustAdobeExtension.setConfiguration(config);
         } catch (Exception e) {
+          Log.e("example", "Exception while configuration: " + e.getMessage());
         }
 
         // register extensions
@@ -258,9 +260,9 @@ Build and run your Android app. In your `LogCat` viewer, set the filter `tag:Adj
 You can use Adobe `MobileCore.trackAction` API for [`event tracking`][event-tracking]. Suppose you want to track every tap on a button. To do so, you'll create a new event token in your [dashboard]. Let's say that the event token is `abc123`. In your button's `onClick` method, add the following lines to track the click:
 
 ```java
-String action = "adj.trackEvent";
+String action = AdjustAdobeExtension.ADOBE_ADJUST_ACTION_TRACK_EVENT;
 Map<String, String> contextData= new HashMap<String, String>();
-contextData.put("adj.eventToken", "abc123");
+contextData.put(AdjustAdobeExtension.ADOBE_ADJUST_EVENT_TOKEN, "abc123");
 
 MobileCore.trackAction(action, contextData);
 ```
@@ -272,11 +274,11 @@ MobileCore.trackAction(action, contextData);
 If your users can generate revenue by tapping on advertisements or making in-app purchases, you can track those revenues too with events. Let's say a tap is worth one Euro cent. You can track the revenue event like this:
 
 ```java
-String action = "adj.trackEvent";
+String action = AdjustAdobeExtension.ADOBE_ADJUST_ACTION_TRACK_EVENT;
 Map<String, String> contextData= new HashMap<String, String>();
-contextData.put("adj.eventToken", "abc123");
-contextData.put("adj.revenue", "0.01");
-contextData.put("adj.currency", "EUR");
+contextData.put(AdjustAdobeExtension.ADOBE_ADJUST_EVENT_TOKEN, "abc123");
+contextData.put(AdjustAdobeExtension.ADOBE_ADJUST_REVENUE, "0.01");
+contextData.put(AdjustAdobeExtension.ADOBE_ADJUST_CURRENCY, "EUR");
 
 MobileCore.trackAction(action, contextData);
 ```
@@ -301,11 +303,11 @@ You can register a callback URL for your events in your [dashboard]. We will sen
 For example, if you've registered the URL `http://www.example.com/callback`, then you would track an event like this:
 
 ```java
-String action = "adj.trackEvent";
+String action = AdjustAdobeExtension.ADOBE_ADJUST_ACTION_TRACK_EVENT;
 Map<String, String> contextData= new HashMap<String, String>();
-contextData.put("adj.eventToken", "abc123");
-contextData.put("adj.event.callback.key1", "value1");
-contextData.put("adj.event.callback.key2", "value2");
+contextData.put(AdjustAdobeExtension.ADOBE_ADJUST_EVENT_TOKEN, "abc123");
+contextData.put(AdjustAdobeExtension.ADOBE_ADJUST_EVENT_CALLBACK_PARAM_PREFIX + "key1", "value1");
+contextData.put(AdjustAdobeExtension.ADOBE_ADJUST_EVENT_CALLBACK_PARAM_PREFIX + "key2", "value2");
 
 MobileCore.trackAction(action, contextData);
 ```
@@ -327,11 +329,11 @@ When your parameters are activated in the Adjust dashboard, you have the option 
 This works similarly to the callback parameters mentioned above;
 
 ```java
-String action = "adj.trackEvent";
+String action = AdjustAdobeExtension.ADOBE_ADJUST_ACTION_TRACK_EVENT;
 Map<String, String> contextData= new HashMap<String, String>();
-contextData.put("adj.eventToken", "abc123");
-contextData.put("adj.event.partner.key1", "value1");
-contextData.put("adj.event.partner.key2", "value2");
+contextData.put(AdjustAdobeExtension.ADOBE_ADJUST_EVENT_TOKEN, "abc123");
+contextData.put(AdjustAdobeExtension.ADOBE_ADJUST_EVENT_PARTNER_PARAM_PREFIX + "key1", "value1");
+contextData.put(AdjustAdobeExtension.ADOBE_ADJUST_EVENT_PARTNER_PARAM_PREFIX + "key2", "value2");
 
 MobileCore.trackAction(action, contextData);
 ```
@@ -358,7 +360,7 @@ config.setOnAttributionChangedListener(new OnAttributionChangedListener() {
     public void onAttributionChanged(AdjustAttribution attribution) {}
 });
 
-AdjustAdobeExtension.registerExtension(config);
+AdjustAdobeExtension.setConfiguration(config);
 ```
 
 The listener function is called after the SDK receives the final attribution data. Within the listener function, you'll have access to the `attribution` parameter. 
@@ -384,7 +386,7 @@ config.setOnDeeplinkResponseListener(new OnDeeplinkResponseListener() {
     }
 });
 
-AdjustAdobeExtension.registerExtension(config);
+AdjustAdobeExtension.setConfiguration(config);
 ```
 
 After the Adjust SDK receives the deep link information from our backend, the SDK will deliver you its content via the listener and expect the boolean return value from you. This return value represents your decision on whether or not the Adjust SDK should launch the activity to which you have assigned the scheme name from the deeplink.
@@ -396,9 +398,9 @@ Push tokens are used for Audience Builder and client callbacks; they are also re
 To send us the push notification token, add the following call to Adjust once you have obtained your token (or whenever its value changes):
 
 ```java
-String action = "adj.setPushToken";
+String action = AdjustAdobeExtension.ADOBE_ADJUST_ACTION_SET_PUSH_TOKEN;
 Map<String, String> contextData= new HashMap<String, String>();
-contextData.put("adj.pushToken", "your_push_token");
+contextData.put(AdjustAdobeExtension.ADOBE_ADJUST_PUSH_TOKEN, "your_push_token");
 
 MobileCore.trackAction(action, contextData);
 ```
