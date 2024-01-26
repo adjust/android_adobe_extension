@@ -96,7 +96,7 @@ MobileCore.trackAction(action, contextData);
 ```java
 String action = AdjustAdobeExtension.ADOBE_ADJUST_ACTION_TRACK_EVENT;
 Map<String, String> contextData= new HashMap<String, String>();
-contextData.put(AdjustAdobeExtension.ADOBE_ADJUST_EVENT_TOKEN, "g3mfiw");
+contextData.put(AdjustAdobeExtension.ADOBE_ADJUST_EVENT_TOKEN, "{EventToken}");
 
 MobileCore.trackAction(action, contextData);
 ```
