@@ -1,3 +1,18 @@
+### Version 2.0.0 (30th January 2024)
+### Added
+- Added support for the latest Adobe Experience Platform Core SDK version 2.0 and above.
+
+### Removed
+- Removed support for the deprecated Adobe Experience Platform SDK version below 2.0.
+
+### Changed
+- Updated native Android SDK dependency to version 4.38.0.
+
+#### Native Android SDK
+- [Android@v4.38.0][android_sdk_v4.38.0]
+
+---
+
 ### Version 1.1.0 (7th July 2022)
 #### Added
 - Added ability to send event callback and partner parameters.
@@ -52,3 +67,4 @@
 [android_sdk_v4.27.0]: https://github.com/adjust/android_sdk/tree/v4.27.0
 [android_sdk_v4.29.1]: https://github.com/adjust/android_sdk/tree/v4.29.1
 [android_sdk_v4.30.1]: https://github.com/adjust/android_sdk/tree/v4.30.1
+[android_sdk_v4.38.0]: https://github.com/adjust/android_sdk/tree/v4.38.0
