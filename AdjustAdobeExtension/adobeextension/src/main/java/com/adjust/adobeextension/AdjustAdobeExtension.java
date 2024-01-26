@@ -12,6 +12,14 @@ import android.util.Log;
 public class AdjustAdobeExtension {
 
     public static final Class<AdjustAdobeExtensionInternal> EXTENSION = AdjustAdobeExtensionInternal.class;
+    public static final String ADOBE_ADJUST_ACTION_TRACK_EVENT = "adj.trackEvent";
+    public static final String ADOBE_ADJUST_ACTION_SET_PUSH_TOKEN = "adj.setPushToken";
+    public static final String ADOBE_ADJUST_EVENT_TOKEN = "adj.eventToken";
+    public static final String ADOBE_ADJUST_PUSH_TOKEN = "adj.pushToken";
+    public static final String ADOBE_ADJUST_CURRENCY = "adj.currency";
+    public static final String ADOBE_ADJUST_REVENUE = "adj.revenue";
+    public static final String ADOBE_ADJUST_EVENT_CALLBACK_PARAM_PREFIX = "adj.event.callback.";
+    public static final String ADOBE_ADJUST_EVENT_PARTNER_PARAM_PREFIX = "adj.event.partner.";
 
     /**
      * Adjust Sdk Config passed to Adobe Adjust Extension.
