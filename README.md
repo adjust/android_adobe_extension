@@ -365,6 +365,16 @@ AdjustAdobeExtension.setConfiguration(config);
 
 The listener function is called after the SDK receives the final attribution data. Within the listener function, you'll have access to the `attribution` parameter. 
 
+### <a id="af-deep-linking"></a>Direct deep linking (reattribution)
+
+Deep links are URLs that direct users to a specific page in your app without any additional navigation. You can use them throughout your marketing funnel to improve user acquisition, engagement, and retention. You can also re-engage your users via deep links which can potentially change their attribution. In order for Adjust to be able to properly reattribute your users via deep links, you need to make sure to pass the deep link to Adjust Adobe extension like desrcribed below:
+
+```java
+Intent intent = getIntent();
+Uri data = intent.getData();
+AdjustAdobeExtension.openUrl(data, getApplicationContext());
+```
+
 ### <a id="af-deferred-deep-linking-callback"></a>Deferred deep linking callback
 
 The Adjust SDK opens the deferred deep link by default. There is no extra configuration needed. But if you wish to control whether the Adjust SDK will open the deferred deep link or not, you can do it with a callback method in the config object.
