@@ -81,7 +81,7 @@ def pomConfig = {
         }
         developer {
             name 'Ugljesa Erceg'
-            email 'ugljesa@adjust.com'
+            email 'ugi@adjust.com'
         }
     }
 }
