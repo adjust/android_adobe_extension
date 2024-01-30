@@ -23,7 +23,7 @@ android {
 
 dependencies {
     implementation 'androidx.test.ext:junit:1.1.5'
-    implementation 'com.adjust.sdk:adjust-android:4.38.0'
+    implementation 'com.adjust.sdk:adjust-android:4.38.1'
     implementation 'com.adobe.marketing.mobile:core:2.6.1'
 }
 
