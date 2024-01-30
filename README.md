@@ -56,7 +56,7 @@ If you are using [`Maven`][maven], add the following to your `build.gradle` file
 
 ```gradle
 implementation 'com.adjust.adobeextension:adobeextension:2.0.0'
-implementation 'com.adjust.sdk:adjust-android:4.38.0'
+implementation 'com.adjust.sdk:adjust-android:4.38.1'
 implementation 'com.adobe.marketing.mobile:core:2.6.1'
 implementation 'com.android.installreferrer:installreferrer:2.2'
 ```

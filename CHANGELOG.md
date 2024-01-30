@@ -6,10 +6,10 @@
 - Removed support for the deprecated Adobe Experience Platform SDK version below 2.0.
 
 ### Changed
-- Updated native Android SDK dependency to version 4.38.0.
+- Updated native Android SDK dependency to version 4.38.1.
 
 #### Native Android SDK
-- [Android@v4.38.0][android_sdk_v4.38.0]
+- [Android@v4.38.1][android_sdk_v4.38.1]
 
 ---
 
@@ -67,4 +67,4 @@
 [android_sdk_v4.27.0]: https://github.com/adjust/android_sdk/tree/v4.27.0
 [android_sdk_v4.29.1]: https://github.com/adjust/android_sdk/tree/v4.29.1
 [android_sdk_v4.30.1]: https://github.com/adjust/android_sdk/tree/v4.30.1
-[android_sdk_v4.38.0]: https://github.com/adjust/android_sdk/tree/v4.38.0
+[android_sdk_v4.38.1]: https://github.com/adjust/android_sdk/tree/v4.38.1
