@@ -1,5 +1,7 @@
 package com.adjust.examples;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
@@ -18,6 +20,10 @@ public class MainActivity extends AppCompatActivity {
     void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent = getIntent();
+        Uri data = intent.getData();
+        AdjustAdobeExtension.openUrl(data, getApplicationContext());
     }
 
     public void trackSimpleEvent(View view) {
