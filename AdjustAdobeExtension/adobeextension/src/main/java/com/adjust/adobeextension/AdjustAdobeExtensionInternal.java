@@ -7,9 +7,9 @@ import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_KEY_
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_KEY_CONTEXT_DATA;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EXTENSION_NAME;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EXTENSION_VERSION;
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_EXTENSION;
 
-import android.util.Log;
+import com.adobe.marketing.mobile.services.Log;
 
 import androidx.annotation.NonNull;
 
@@ -34,6 +34,7 @@ import java.util.concurrent.Executors;
 class AdjustAdobeExtensionInternal
         extends Extension
 {
+    private static final String LOG_SOURCE = AdjustAdobeExtensionInternal.class.getSimpleName();
     private final ConcurrentLinkedQueue<Event> eventQueue;
     private final ExecutorService executorService;
     private final AdjustSdkApiHandler adjustSdkApiHandler;
@@ -102,14 +103,14 @@ class AdjustAdobeExtensionInternal
                 SharedStateResolution.ANY);
 
         if (sharedStateResult == null) {
-            Log.e(LOG_TAG, "Failed to handle configuration event, sharedStateResult is null");
+            Log.error(LOG_EXTENSION, LOG_SOURCE,"Failed to handle configuration event, sharedStateResult is null");
             return;
         }
 
         Map<String, Object> sharedStateResultMap = sharedStateResult.getValue();
 
         if (sharedStateResultMap == null) {
-            Log.e(LOG_TAG, "Failed to handle configuration event, sharedEventState is null");
+            Log.error(LOG_EXTENSION, LOG_SOURCE,"Failed to handle configuration event, sharedEventState is null");
             return;
         }
 
@@ -119,7 +120,7 @@ class AdjustAdobeExtensionInternal
         if (!(appTokenObject instanceof String)
                 || !(shouldTrackAttributionObject instanceof Boolean))
         {
-            Log.e(LOG_TAG, "Failed to handle configuration event, "
+            Log.error(LOG_EXTENSION, LOG_SOURCE, "Failed to handle configuration event, "
                            + "appToken or shouldTrackAttribution are not instance of correct type");
             return;
         }

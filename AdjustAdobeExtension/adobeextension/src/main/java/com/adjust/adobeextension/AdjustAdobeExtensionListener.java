@@ -2,9 +2,9 @@ package com.adjust.adobeextension;
 
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADOBE_MODULE_CONFIGURATION;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADOBE_SHARED_STATE_OWNER;
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_EXTENSION;
 
-import android.util.Log;
+import com.adobe.marketing.mobile.services.Log;
 
 import com.adobe.marketing.mobile.Event;
 import com.adobe.marketing.mobile.EventType;
@@ -19,6 +19,8 @@ import java.util.Map;
 class AdjustAdobeExtensionListener
         implements ExtensionEventListener {
 
+    private static final String LOG_SOURCE = AdjustAdobeExtensionListener.class.getSimpleName();
+
     AdjustAdobeExtensionInternal adjustAdobeExtension;
 
     public AdjustAdobeExtensionListener(AdjustAdobeExtensionInternal extension) {
@@ -28,24 +30,24 @@ class AdjustAdobeExtensionListener
     @Override
     public void hear(final Event event) {
         if (event == null) {
-            Log.e(LOG_TAG, "Failed to hear event in listener, event is null");
+            Log.error(LOG_EXTENSION, LOG_SOURCE,"Failed to hear event in listener, event is null");
             return;
         }
 
         String eventType = event.getType();
         if (eventType == null) {
-            Log.e(LOG_TAG, "Failed to hear event in listener, eventType is null");
+            Log.error(LOG_EXTENSION, LOG_SOURCE,"Failed to hear event in listener, eventType is null");
             return;
         }
 
         Map<String, Object> eventData = event.getEventData();
         if (eventData == null) {
-            Log.e(LOG_TAG, "Failed to hear event in listener, eventData is null");
+            Log.error(LOG_EXTENSION, LOG_SOURCE, "Failed to hear event in listener, eventData is null");
             return;
         }
 
         if (adjustAdobeExtension == null) {
-            Log.e(LOG_TAG, "Failed to hear event in listener, adjustAdobeExtension is null");
+            Log.error(LOG_EXTENSION, LOG_SOURCE,"Failed to hear event in listener, adjustAdobeExtension is null");
             return;
         }
 

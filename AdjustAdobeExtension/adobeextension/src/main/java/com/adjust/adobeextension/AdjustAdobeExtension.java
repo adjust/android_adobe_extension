@@ -1,8 +1,8 @@
 package com.adjust.adobeextension;
 
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_EXTENSION;
 
-import android.util.Log;
+import com.adobe.marketing.mobile.services.Log;
 
 /**
  * The main interface to Adjust Adobe Extension.
@@ -20,6 +20,8 @@ public class AdjustAdobeExtension {
     public static final String ADOBE_ADJUST_REVENUE = "adj.revenue";
     public static final String ADOBE_ADJUST_EVENT_CALLBACK_PARAM_PREFIX = "adj.event.callback.";
     public static final String ADOBE_ADJUST_EVENT_PARTNER_PARAM_PREFIX = "adj.event.partner.";
+
+    private static final String LOG_SOURCE = AdjustAdobeExtension.class.getSimpleName();
 
     /**
      * Adjust Sdk Config passed to Adobe Adjust Extension.
@@ -39,18 +41,18 @@ public class AdjustAdobeExtension {
      */
     public static void setConfiguration(final AdjustAdobeExtensionConfig config) {
         if (config == null) {
-            Log.d(LOG_TAG, "AdjustAdobeExtensionConfig is null");
+            Log.debug(LOG_EXTENSION, LOG_SOURCE, "AdjustAdobeExtensionConfig is null");
             return;
         }
 
         if (config.getEnvironment() == null) {
-            Log.d(LOG_TAG, "AdjustAdobeExtensionConfig environment is null");
+            Log.debug(LOG_EXTENSION, LOG_SOURCE, "AdjustAdobeExtensionConfig environment is null");
             return;
         }
 
         adjustAdobeExtensionConfig = config;
 
-        Log.d(LOG_TAG, "Adjust Adobe Extension initialized");
+        Log.debug(LOG_EXTENSION, LOG_SOURCE, "Adjust Adobe Extension initialized");
     }
 
     /**
