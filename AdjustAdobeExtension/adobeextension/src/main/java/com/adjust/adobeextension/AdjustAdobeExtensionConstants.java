@@ -1,17 +1,13 @@
 package com.adjust.adobeextension;
 
 class AdjustAdobeExtensionConstants {
-    static final String LOG_TAG = "AdjustAdobeExtension";
+    static final String LOG_EXTENSION = "AdjustAdobeExtension";
     static final String EXTENSION_NAME = "com.adjust.adobeextension";
-    static final String EXTENSION_VERSION = "adobe_ext1.1.0";
+    static final String EXTENSION_VERSION = "adobe_ext2.0.0";
 
     static final String ADOBE_MODULE_CONFIGURATION = "com.adobe.module.configuration";
     static final String ADOBE_SHARED_STATE_OWNER = "stateowner";
 
-    static final String EVENT_TYPE_ADOBE_HUB = "com.adobe.eventType.hub";
-    static final String EVENT_TYPE_ADOBE_GENERIC_TRACK = "com.adobe.eventType.generic.track";
-    static final String EVENT_SOURCE_ADOBE_SHARED_STATE = "com.adobe.eventSource.sharedState";
-    static final String EVENT_SOURCE_ADOBE_REQUEST_CONTENT = "com.adobe.eventSource.requestContent";
     static final String EVENT_KEY_ACTION = "action";
     static final String EVENT_KEY_CONTEXT_DATA = "contextdata";
 

@@ -1,31 +1,30 @@
 package com.adjust.adobeextension;
 
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_KEY_APP_TOKEN;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_KEY_TRACK_ATTRIBUTION;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADOBE_MODULE_CONFIGURATION;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_KEY_ACTION;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_KEY_CONTEXT_DATA;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EXTENSION_NAME;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EXTENSION_VERSION;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_EXTENSION;
+
+import com.adobe.marketing.mobile.services.Log;
+
+import androidx.annotation.NonNull;
+
 import com.adobe.marketing.mobile.Event;
+import com.adobe.marketing.mobile.EventSource;
+import com.adobe.marketing.mobile.EventType;
 import com.adobe.marketing.mobile.Extension;
 import com.adobe.marketing.mobile.ExtensionApi;
-import com.adobe.marketing.mobile.ExtensionError;
-import com.adobe.marketing.mobile.ExtensionErrorCallback;
-import com.adobe.marketing.mobile.ExtensionUnexpectedError;
-import com.adobe.marketing.mobile.LoggingMode;
-import com.adobe.marketing.mobile.MobileCore;
+import com.adobe.marketing.mobile.SharedStateResolution;
+import com.adobe.marketing.mobile.SharedStateResult;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_KEY_APP_TOKEN;
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_KEY_TRACK_ATTRIBUTION;
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADOBE_MODULE_CONFIGURATION;
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_KEY_CONTEXT_DATA;
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_SOURCE_ADOBE_REQUEST_CONTENT;
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_SOURCE_ADOBE_SHARED_STATE;
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_KEY_ACTION;
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_TYPE_ADOBE_GENERIC_TRACK;
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EVENT_TYPE_ADOBE_HUB;
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EXTENSION_NAME;
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.EXTENSION_VERSION;
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
 
 /**
  * Internal class for Adjust Adobe Extension implementation.
@@ -35,6 +34,7 @@ import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
 class AdjustAdobeExtensionInternal
         extends Extension
 {
+    private static final String LOG_SOURCE = AdjustAdobeExtensionInternal.class.getSimpleName();
     private final ConcurrentLinkedQueue<Event> eventQueue;
     private final ExecutorService executorService;
     private final AdjustSdkApiHandler adjustSdkApiHandler;
@@ -50,6 +50,7 @@ class AdjustAdobeExtensionInternal
         registerListenerForGenericTrackEvent(extensionApi);
     }
 
+    @NonNull
     @Override
     protected String getName() {
         return EXTENSION_NAME;
@@ -58,17 +59,6 @@ class AdjustAdobeExtensionInternal
     @Override
     protected String getVersion() {
         return String.format("%s@%s", EXTENSION_VERSION, adjustSdkApiHandler.getVersion());
-    }
-
-    @Override
-    protected void onUnexpectedError(final ExtensionUnexpectedError extensionUnexpectedError) {
-        super.onUnexpectedError(extensionUnexpectedError);
-
-        MobileCore.log(LoggingMode.ERROR, LOG_TAG,
-                       "ExtensionUnexpectedError"
-                               + extensionUnexpectedError != null ?
-                                    ": " + extensionUnexpectedError.getMessage()
-                                    : " with null error");
     }
 
     protected void handleConfigurationEvent(final Event event) {
@@ -91,37 +81,13 @@ class AdjustAdobeExtensionInternal
 
     // internal methods
     private void registerListenerForConfigurationEvent(final ExtensionApi extensionApi) {
-        ExtensionErrorCallback<ExtensionError>
-                errorCallback = new ExtensionErrorCallback<ExtensionError>() {
-            @Override
-            public void error(final ExtensionError extensionError) {
-                MobileCore.log(LoggingMode.ERROR, LOG_TAG,
-                               "Failed to register listener for config update event, error : " +
-                               extensionError.getErrorName());
-            }
-        };
-
-        extensionApi.registerEventListener(
-                EVENT_TYPE_ADOBE_HUB,
-                EVENT_SOURCE_ADOBE_SHARED_STATE,
-                AdjustAdobeExtensionListener.class, errorCallback);
+        extensionApi.registerEventListener(EventType.HUB,
+                EventSource.SHARED_STATE, new AdjustAdobeExtensionListener(this));
     }
 
     private void registerListenerForGenericTrackEvent(final ExtensionApi extensionApi) {
-        ExtensionErrorCallback<ExtensionError>
-                errorCallback = new ExtensionErrorCallback<ExtensionError>() {
-            @Override
-            public void error(final ExtensionError extensionError) {
-                MobileCore.log(LoggingMode.ERROR, LOG_TAG,
-                               "Failed to register listener for generic track event, error : " +
-                               extensionError.getErrorName());
-            }
-        };
-
-        extensionApi.registerEventListener(
-                EVENT_TYPE_ADOBE_GENERIC_TRACK,
-                EVENT_SOURCE_ADOBE_REQUEST_CONTENT,
-                AdjustAdobeExtensionListener.class, errorCallback);
+        extensionApi.registerEventListener(EventType.GENERIC_TRACK,
+                EventSource.REQUEST_CONTENT, new AdjustAdobeExtensionListener(this));
     }
 
     /**
@@ -129,36 +95,32 @@ class AdjustAdobeExtensionInternal
      * Also calls to process generic track if there are any queued up
      */
     private void handleConfigurationEventAsync(final Event event) {
-        ExtensionErrorCallback<ExtensionError>
-                errorCallback = new ExtensionErrorCallback<ExtensionError>() {
-            @Override
-            public void error(final ExtensionError extensionError) {
-                MobileCore.log(LoggingMode.ERROR, LOG_TAG,
-                               "Failed to retrieve the shared state, error : " +
-                               extensionError.getErrorName());
-            }
-        };
 
-        Map<String, Object> sharedEventState = getApi().getSharedEventState(
+        SharedStateResult sharedStateResult = getApi().getSharedState(
                 ADOBE_MODULE_CONFIGURATION,
                 event,
-                errorCallback);
+                false,
+                SharedStateResolution.ANY);
 
-        if (sharedEventState == null) {
-            MobileCore.log(LoggingMode.ERROR, LOG_TAG,
-                           "Failed to handle configuration event, "
-                           + "sharedEventState is null");
+        if (sharedStateResult == null) {
+            Log.error(LOG_EXTENSION, LOG_SOURCE,"Failed to handle configuration event, sharedStateResult is null");
             return;
         }
 
-        Object appTokenObject = sharedEventState.get(ADJUST_KEY_APP_TOKEN);
-        Object shouldTrackAttributionObject = sharedEventState.get(ADJUST_KEY_TRACK_ATTRIBUTION);
+        Map<String, Object> sharedStateResultMap = sharedStateResult.getValue();
+
+        if (sharedStateResultMap == null) {
+            Log.error(LOG_EXTENSION, LOG_SOURCE,"Failed to handle configuration event, sharedEventState is null");
+            return;
+        }
+
+        Object appTokenObject = sharedStateResultMap.get(ADJUST_KEY_APP_TOKEN);
+        Object shouldTrackAttributionObject = sharedStateResultMap.get(ADJUST_KEY_TRACK_ATTRIBUTION);
 
         if (!(appTokenObject instanceof String)
                 || !(shouldTrackAttributionObject instanceof Boolean))
         {
-            MobileCore.log(LoggingMode.ERROR, LOG_TAG,
-                           "Failed to handle configuration event, "
+            Log.error(LOG_EXTENSION, LOG_SOURCE, "Failed to handle configuration event, "
                            + "appToken or shouldTrackAttribution are not instance of correct type");
             return;
         }

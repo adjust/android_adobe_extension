@@ -7,23 +7,15 @@ import android.util.Log;
 import com.adjust.adobeextension.AdjustAdobeExtension;
 import com.adjust.adobeextension.AdjustAdobeExtensionConfig;
 import com.adjust.sdk.AdjustAttribution;
-import com.adjust.sdk.AdjustEventFailure;
-import com.adjust.sdk.AdjustEventSuccess;
-import com.adjust.sdk.AdjustSessionFailure;
-import com.adjust.sdk.AdjustSessionSuccess;
 import com.adjust.sdk.OnAttributionChangedListener;
 import com.adjust.sdk.OnDeeplinkResponseListener;
-import com.adjust.sdk.OnEventTrackingFailedListener;
-import com.adjust.sdk.OnEventTrackingSucceededListener;
-import com.adjust.sdk.OnSessionTrackingFailedListener;
-import com.adjust.sdk.OnSessionTrackingSucceededListener;
 import com.adobe.marketing.mobile.AdobeCallback;
-import com.adobe.marketing.mobile.Identity;
-import com.adobe.marketing.mobile.InvalidInitException;
-import com.adobe.marketing.mobile.Lifecycle;
+import com.adobe.marketing.mobile.Extension;
 import com.adobe.marketing.mobile.LoggingMode;
 import com.adobe.marketing.mobile.MobileCore;
-import com.adobe.marketing.mobile.Signal;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class MainApp extends Application {
 
@@ -39,50 +31,56 @@ public class MainApp extends Application {
         // internally translates to Adjust SDK logging
         MobileCore.setLogLevel(LoggingMode.VERBOSE);
 
-        // register Adobe core extensions
-        // below are just sample extensions, not limited to these
+        // configure Adjust Adobe Extension
+        configureAdjustAdobeExtension();
+
+        // register extensions
         try {
-            Identity.registerExtension();
-            Signal.registerExtension();
-            Lifecycle.registerExtension();
-        } catch (InvalidInitException e) {
-            e.printStackTrace();
+            List<Class<? extends Extension>> extensions = Arrays.asList(AdjustAdobeExtension.EXTENSION);
+            MobileCore.registerExtensions(extensions, new AdobeCallback<Object>() {
+                @Override
+                public void call(Object o) {
+                    Log.d("example", "Adjust Adobe Extension SDK initialized");
+                }
+            });
+        } catch (Exception e) {
+            Log.e("example", "Exception while registering Extension: " + e.getMessage());
         }
 
-        // register the Adjust extension
-        AdjustAdobeExtensionConfig config =
-                new AdjustAdobeExtensionConfig(AdjustAdobeExtensionConfig.ENVIRONMENT_SANDBOX);
+    }
 
-        // Optional callbacks
-        // Set attribution delegate.
-        config.setOnAttributionChangedListener(new OnAttributionChangedListener() {
-            @Override
-            public void onAttributionChanged(AdjustAttribution attribution) {
-                Log.d("example", "Attribution callback called!");
-                Log.d("example", "Attribution: " + attribution.toString());
-            }
-        });
+    private void configureAdjustAdobeExtension() {
+        try {
+            MobileCore.configureWithAppID("89645c501ce0/540de252943f/launch-f8d889dd15b6-development");
 
-        // Evaluate deferred deep link to be launched.
-        config.setOnDeeplinkResponseListener(new OnDeeplinkResponseListener() {
-            @Override
-            public boolean launchReceivedDeeplink(Uri deeplink) {
-                Log.d("example", "Deferred deep link callback called!");
-                Log.d("example", "Deep link URL: " + deeplink);
+            AdjustAdobeExtensionConfig config =
+                    new AdjustAdobeExtensionConfig(AdjustAdobeExtensionConfig.ENVIRONMENT_SANDBOX);
 
-                return true;
-            }
-        });
+            // Optional callbacks
+            // Set attribution delegate.
+            config.setOnAttributionChangedListener(new OnAttributionChangedListener() {
+                @Override
+                public void onAttributionChanged(AdjustAttribution attribution) {
+                    Log.d("example", "Attribution callback called!");
+                    Log.d("example", "Attribution: " + attribution.toString());
+                }
+            });
 
-        // register the Adjust SDK extension
-        AdjustAdobeExtension.registerExtension(config);
+            // Evaluate deferred deep link to be launched.
+            config.setOnDeeplinkResponseListener(new OnDeeplinkResponseListener() {
+                @Override
+                public boolean launchReceivedDeeplink(Uri deeplink) {
+                    Log.d("example", "Deferred deep link callback called!");
+                    Log.d("example", "Deep link URL: " + deeplink);
 
-        // once all the extensions are registered, start processing the events
-        MobileCore.start(new AdobeCallback () {
-            @Override
-            public void call(Object o) {
-                MobileCore.configureWithAppID("89645c501ce0/540de252943f/launch-f8d889dd15b6-development");
-            }
-        });
+                    return true;
+                }
+            });
+
+            // register the Adjust SDK extension
+            AdjustAdobeExtension.setConfiguration(config);
+        } catch (Exception e) {
+
+        }
     }
 }

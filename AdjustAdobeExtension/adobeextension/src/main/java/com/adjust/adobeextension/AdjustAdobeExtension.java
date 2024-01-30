@@ -1,11 +1,12 @@
 package com.adjust.adobeextension;
 
-import com.adobe.marketing.mobile.ExtensionError;
-import com.adobe.marketing.mobile.ExtensionErrorCallback;
-import com.adobe.marketing.mobile.LoggingMode;
-import com.adobe.marketing.mobile.MobileCore;
+import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_EXTENSION;
 
-import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
+import android.content.Context;
+import android.net.Uri;
+
+import com.adjust.sdk.Adjust;
+import com.adobe.marketing.mobile.services.Log;
 
 /**
  * The main interface to Adjust Adobe Extension.
@@ -13,6 +14,18 @@ import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_TAG;
  * See the README for details.
  */
 public class AdjustAdobeExtension {
+
+    public static final Class<AdjustAdobeExtensionInternal> EXTENSION = AdjustAdobeExtensionInternal.class;
+    public static final String ADOBE_ADJUST_ACTION_TRACK_EVENT = "adj.trackEvent";
+    public static final String ADOBE_ADJUST_ACTION_SET_PUSH_TOKEN = "adj.setPushToken";
+    public static final String ADOBE_ADJUST_EVENT_TOKEN = "adj.eventToken";
+    public static final String ADOBE_ADJUST_PUSH_TOKEN = "adj.pushToken";
+    public static final String ADOBE_ADJUST_CURRENCY = "adj.currency";
+    public static final String ADOBE_ADJUST_REVENUE = "adj.revenue";
+    public static final String ADOBE_ADJUST_EVENT_CALLBACK_PARAM_PREFIX = "adj.event.callback.";
+    public static final String ADOBE_ADJUST_EVENT_PARTNER_PARAM_PREFIX = "adj.event.partner.";
+
+    private static final String LOG_SOURCE = AdjustAdobeExtension.class.getSimpleName();
 
     /**
      * Adjust Sdk Config passed to Adobe Adjust Extension.
@@ -30,34 +43,32 @@ public class AdjustAdobeExtension {
      * Method used to register Adjust Adobe Extension.
      * @param config extension config to initialize Adjust Sdk
      */
-    public static void registerExtension(final AdjustAdobeExtensionConfig config) {
+    public static void setConfiguration(final AdjustAdobeExtensionConfig config) {
         if (config == null) {
-            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
-                    "AdjustAdobeExtensionConfig is null");
+            Log.debug(LOG_EXTENSION, LOG_SOURCE, "AdjustAdobeExtensionConfig is null");
             return;
         }
 
         if (config.getEnvironment() == null) {
-            MobileCore.log(LoggingMode.DEBUG, LOG_TAG,
-                    "AdjustAdobeExtensionConfig environment is null");
+            Log.debug(LOG_EXTENSION, LOG_SOURCE, "AdjustAdobeExtensionConfig environment is null");
             return;
         }
 
-        ExtensionErrorCallback<ExtensionError> errorCallback =
-                new ExtensionErrorCallback<ExtensionError>() {
-            @Override
+        adjustAdobeExtensionConfig = config;
 
-            public void error(final ExtensionError extensionError) {
-                MobileCore.log(LoggingMode.ERROR, LOG_TAG,
-                        "Failed to register AdjustAdobeExtension" +
-                                extensionError != null ?
-                                    ", error" + extensionError.getErrorName()
-                                    : " without error");
-            }};
+        Log.debug(LOG_EXTENSION, LOG_SOURCE, "Adjust Adobe Extension initialized");
+    }
 
-        if (MobileCore.registerExtension(AdjustAdobeExtensionInternal.class, errorCallback)) {
-            adjustAdobeExtensionConfig = config;
-        }
+    /**
+     * Method used to process deep link.
+     *
+     * @param url Deep link URL to process
+     * @param context Application context
+     */
+    public static void openUrl(Uri url, Context context) {
+        // Pass deep link to Adjust in order to potentially reattribute user.
+        Log.debug(LOG_EXTENSION, LOG_SOURCE, "openUrl: " + url);
+        Adjust.appWillOpenUrl(url, context);
     }
 
     /**
