@@ -9,10 +9,10 @@ import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_KEY
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.ADJUST_KEY_PUSH_TOKEN_PARAM;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_EXTENSION;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.os.Bundle;
+
+import com.adjust.sdk.Util;
 import com.adobe.marketing.mobile.services.Log;
 
 import com.adjust.sdk.Adjust;
@@ -95,7 +95,7 @@ class AdjustSdkApiHandler {
         AdjustConfig adjustConfig = getAdjustConfig(application.getApplicationContext(),
                 appToken, shouldTrackAttribution, adjustAdobeExtensionConfig);
         adjustConfig.setSdkPrefix(AdjustAdobeExtensionConstants.EXTENSION_VERSION);
-        Adjust.onCreate(adjustConfig);
+        Adjust.initSdk(adjustConfig);
 
         // there might be a moment when activity is already resumed before Sdk initialization
         if (activityResumed) {
@@ -194,39 +194,7 @@ class AdjustSdkApiHandler {
      * @return String Adjust sdk version
      */
     protected String getVersion() {
-        return Adjust.getSdkVersion();
-    }
-
-    /**
-     * This registers AdjustLifecycleCallbacks to activity lifecycle callbacks
-     * It allows tracking of activity lifecycle states
-     */
-    protected boolean registerActivityLifecycleCallbacks(final Context context) {
-        if (application != null) {
-            Log.debug(LOG_EXTENSION, LOG_SOURCE,"Cannot register activity lifecycle callbacks more than once");
-            return false;
-        }
-
-        if (context == null) {
-            Log.debug(LOG_EXTENSION, LOG_SOURCE,"Cannot register activity lifecycle callbacks without context");
-            return false;
-        }
-
-        final Context applicationContext = context.getApplicationContext();
-
-        if (!(applicationContext instanceof Application)) {
-            Log.debug(LOG_EXTENSION, LOG_SOURCE,"Cannot register activity lifecycle callbacks "
-                           + "without application context as Application");
-            return false;
-        }
-
-        Log.debug(LOG_EXTENSION, LOG_SOURCE,"Registering activity lifecycle callbacks");
-
-
-        application = (Application) applicationContext;
-        application.registerActivityLifecycleCallbacks(new AdjustLifecycleCallbacks());
-
-        return true;
+        return Util.getSdkVersion();
     }
 
     /**
@@ -291,48 +259,9 @@ class AdjustSdkApiHandler {
             }
         });
 
-        adjustConfig.setOnDeeplinkResponseListener(
-                adjustAdobeExtensionConfig.getOnDeeplinkResponseListener());
+        adjustConfig.setOnDeferredDeeplinkResponseListener(
+                adjustAdobeExtensionConfig.getOnDeferredDeeplinkResponseListener());
 
         return adjustConfig;
-    }
-
-    private static final class AdjustLifecycleCallbacks
-            implements Application.ActivityLifecycleCallbacks
-    {
-        @Override
-        public void onActivityResumed(final Activity activity) {
-            activityResumed = true;
-
-            // there might be a moment when Sdk is not initialized while Activity resumed
-            if (sdkInitialised) {
-                Adjust.onResume();
-            }
-        }
-
-        @Override
-        public void onActivityPaused(final Activity activity) {
-            activityResumed = false;
-
-            // there might be a moment when Sdk is not initialized while Activity paused
-            if (sdkInitialised) {
-                Adjust.onPause();
-            }
-        }
-
-        @Override
-        public void onActivityStopped(final Activity activity) {}
-
-        @Override
-        public void onActivitySaveInstanceState(final Activity activity, final Bundle outState) {}
-
-        @Override
-        public void onActivityDestroyed(final Activity activity) {}
-
-        @Override
-        public void onActivityCreated(final Activity activity, final Bundle savedInstanceState) {}
-
-        @Override
-        public void onActivityStarted(final Activity activity) {}
     }
 }

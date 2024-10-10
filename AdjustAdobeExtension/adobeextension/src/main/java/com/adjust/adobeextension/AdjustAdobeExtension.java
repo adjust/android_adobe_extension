@@ -6,6 +6,7 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.adjust.sdk.Adjust;
+import com.adjust.sdk.AdjustDeeplink;
 import com.adobe.marketing.mobile.services.Log;
 
 /**
@@ -68,7 +69,8 @@ public class AdjustAdobeExtension {
     public static void openUrl(Uri url, Context context) {
         // Pass deep link to Adjust in order to potentially reattribute user.
         Log.debug(LOG_EXTENSION, LOG_SOURCE, "openUrl: " + url);
-        Adjust.appWillOpenUrl(url, context);
+        AdjustDeeplink adjustDeeplink = new AdjustDeeplink(url);
+        Adjust.processDeeplink(adjustDeeplink, context);
     }
 
     /**

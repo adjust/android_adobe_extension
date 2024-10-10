@@ -2,7 +2,7 @@ package com.adjust.adobeextension;
 
 import com.adjust.sdk.AdjustConfig;
 import com.adjust.sdk.OnAttributionChangedListener;
-import com.adjust.sdk.OnDeeplinkResponseListener;
+import com.adjust.sdk.OnDeferredDeeplinkResponseListener;
 
 /**
  * Class for Adjust Adobe Extension Config.
@@ -33,7 +33,7 @@ public class AdjustAdobeExtensionConfig {
     /**
      * Callback to listen for deeplink response.
      */
-    private OnDeeplinkResponseListener onDeeplinkResponseListener;
+    private OnDeferredDeeplinkResponseListener onDeferredDeeplinkResponseListener;
 
     /**
      * Primary constructor.
@@ -54,10 +54,10 @@ public class AdjustAdobeExtensionConfig {
     /**
      * Method to set callback for deeplink response.
      */
-    public void setOnDeeplinkResponseListener(
-            final OnDeeplinkResponseListener onDeeplinkResponseListener)
+    public void setOnDeferredDeeplinkResponseListener(
+            final OnDeferredDeeplinkResponseListener onDeferredDeeplinkResponseListener)
     {
-        this.onDeeplinkResponseListener = onDeeplinkResponseListener;
+        this.onDeferredDeeplinkResponseListener = onDeferredDeeplinkResponseListener;
     }
 
     /**
@@ -77,7 +77,7 @@ public class AdjustAdobeExtensionConfig {
     /**
      * Method to get deeplink response callback listener
      */
-    public OnDeeplinkResponseListener getOnDeeplinkResponseListener() {
-        return onDeeplinkResponseListener;
+    public OnDeferredDeeplinkResponseListener getOnDeferredDeeplinkResponseListener() {
+        return onDeferredDeeplinkResponseListener;
     }
 }
