@@ -63,14 +63,70 @@ public class AdjustAdobeExtension {
     /**
      * Method used to process deep link.
      *
-     * @param url Deep link URL to process
+     * @param adjustDeeplink Deep link object to process
      * @param context Application context
      */
-    public static void openUrl(Uri url, Context context) {
+    public static void processDeeplink(AdjustDeeplink adjustDeeplink, Context context) {
+        if (!adjustDeeplink.isValid()) {
+            Log.error(LOG_EXTENSION, LOG_SOURCE, "processDeeplink: invalid deeplink url");
+            return;
+        }
+        Log.debug(LOG_EXTENSION, LOG_SOURCE, "processDeeplink: " + adjustDeeplink.getUrl());
+
         // Pass deep link to Adjust in order to potentially reattribute user.
-        Log.debug(LOG_EXTENSION, LOG_SOURCE, "openUrl: " + url);
-        AdjustDeeplink adjustDeeplink = new AdjustDeeplink(url);
         Adjust.processDeeplink(adjustDeeplink, context);
+    }
+
+    /**
+     * Method to add global callback parameter that will be sent with each session and event.
+     *
+     * @param key   Global callback parameter key
+     * @param value Global callback parameter value
+     */
+    public static void addGlobalCallbackParameter(String key, String value) {
+        Adjust.addGlobalCallbackParameter(key, value);
+    }
+
+    /**
+     * Method to add global partner parameter that will be sent with each session and event.
+     *
+     * @param key   Global partner parameter key
+     * @param value Global partner parameter value
+     */
+    public static void addGlobalPartnerParameter(String key, String value) {
+        Adjust.addGlobalPartnerParameter(key, value);
+    }
+
+    /**
+     * Method to remove global callback parameter from session and event packages.
+     *
+     * @param key Global callback parameter key
+     */
+    public static void removeGlobalCallbackParameter(String key) {
+        Adjust.removeGlobalCallbackParameter(key);
+    }
+
+    /**
+     * Method to remove global partner parameter from session and event packages.
+     *
+     * @param key Global partner parameter key
+     */
+    public static void removeGlobalPartnerParameter(String key) {
+        Adjust.removeGlobalPartnerParameter(key);
+    }
+
+    /**
+     * Method to remove all added global callback parameters.
+     */
+    public static void removeGlobalCallbackParameters() {
+        Adjust.removeGlobalCallbackParameters();
+    }
+
+    /**
+     * Called to remove all added global partner parameters.
+     */
+    public static void removeGlobalPartnerParameters() {
+        Adjust.removeGlobalPartnerParameters();
     }
 
     /**
