@@ -43,11 +43,6 @@ class AdjustSdkApiHandler {
     private static boolean sdkInitialised = false;
 
     /**
-     * Toggle flag to indicate whether Android Activity has been resumed or paused
-     */
-    private static boolean activityResumed = false;
-
-    /**
      * Application instance
      */
     private static Application application;
@@ -96,11 +91,6 @@ class AdjustSdkApiHandler {
                 appToken, shouldTrackAttribution, adjustAdobeExtensionConfig);
         adjustConfig.setSdkPrefix(AdjustAdobeExtensionConstants.EXTENSION_VERSION);
         Adjust.initSdk(adjustConfig);
-
-        // there might be a moment when activity is already resumed before Sdk initialization
-        if (activityResumed) {
-            Adjust.onResume();
-        }
 
         sdkInitialised = true;
     }

@@ -3,10 +3,10 @@ package com.adjust.adobeextension;
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_EXTENSION;
 
 import android.content.Context;
-import android.net.Uri;
 
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustDeeplink;
+import com.adjust.sdk.OnDeeplinkResolvedListener;
 import com.adobe.marketing.mobile.services.Log;
 
 /**
@@ -75,6 +75,24 @@ public class AdjustAdobeExtension {
 
         // Pass deep link to Adjust in order to potentially reattribute user.
         Adjust.processDeeplink(adjustDeeplink, context);
+    }
+
+    /**
+     * Process the deeplink that has opened an app and potentially get a resolved link.
+     *
+     * @param adjustDeeplink Deeplink object to process
+     * @param callback  Callback where either resolved or echoed deeplink will be sent.
+     * @param context Application context
+     */
+    public static void processAndResolveDeeplink(AdjustDeeplink adjustDeeplink, Context context, OnDeeplinkResolvedListener callback) {
+        if (!adjustDeeplink.isValid()) {
+            Log.error(LOG_EXTENSION, LOG_SOURCE, "processAndResolveDeeplink: invalid deeplink url");
+            return;
+        }
+        Log.debug(LOG_EXTENSION, LOG_SOURCE, "processAndResolveDeeplink: " + adjustDeeplink.getUrl());
+
+        // Pass deep link to Adjust in order to potentially reattribute user and get a resolved link.
+        Adjust.processAndResolveDeeplink(adjustDeeplink, context, callback);
     }
 
     /**
