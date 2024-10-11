@@ -226,6 +226,8 @@ class AdjustSdkApiHandler {
                 break;
         }
 
+        adjustConfig.setExternalDeviceId(adjustAdobeExtensionConfig.getExternalDeviceId());
+
         adjustConfig.setOnAttributionChangedListener(new OnAttributionChangedListener() {
             @Override
             public

@@ -26,6 +26,11 @@ public class AdjustAdobeExtensionConfig {
     private final String environment;
 
     /**
+     * An external identifier for a device or user.
+     */
+    private String externalDeviceId;
+
+    /**
      * Callback to listen for attribution change.
      */
     private OnAttributionChangedListener onAttributionChangedListener;
@@ -40,6 +45,13 @@ public class AdjustAdobeExtensionConfig {
      */
     public AdjustAdobeExtensionConfig(final String environment) {
         this.environment = environment;
+    }
+
+    /**
+     * Method to set an external identifier for a device or user.
+     */
+    public void setExternalDeviceId(String externalDeviceId) {
+        this.externalDeviceId = externalDeviceId;
     }
 
     /**
@@ -65,6 +77,13 @@ public class AdjustAdobeExtensionConfig {
      */
     public String getEnvironment() {
         return environment;
+    }
+
+    /**
+     * Method to get the external identifier set for a device or user.
+     */
+    public String getExternalDeviceId() {
+        return externalDeviceId;
     }
 
     /**
