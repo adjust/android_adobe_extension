@@ -8,7 +8,7 @@ import com.adjust.adobeextension.AdjustAdobeExtension;
 import com.adjust.adobeextension.AdjustAdobeExtensionConfig;
 import com.adjust.sdk.AdjustAttribution;
 import com.adjust.sdk.OnAttributionChangedListener;
-import com.adjust.sdk.OnDeeplinkResponseListener;
+import com.adjust.sdk.OnDeferredDeeplinkResponseListener;
 import com.adobe.marketing.mobile.AdobeCallback;
 import com.adobe.marketing.mobile.Extension;
 import com.adobe.marketing.mobile.LoggingMode;
@@ -67,11 +67,11 @@ public class MainApp extends Application {
             });
 
             // Evaluate deferred deep link to be launched.
-            config.setOnDeeplinkResponseListener(new OnDeeplinkResponseListener() {
+            config.setOnDeferredDeeplinkResponseListener(new OnDeferredDeeplinkResponseListener() {
                 @Override
-                public boolean launchReceivedDeeplink(Uri deeplink) {
+                public boolean launchReceivedDeeplink(Uri uri) {
                     Log.d("example", "Deferred deep link callback called!");
-                    Log.d("example", "Deep link URL: " + deeplink);
+                    Log.d("example", "Deep link URL: " + uri);
 
                     return true;
                 }
