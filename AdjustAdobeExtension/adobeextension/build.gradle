@@ -24,13 +24,13 @@ android {
 dependencies {
     implementation 'androidx.test.ext:junit:1.2.1'
     implementation 'com.adjust.sdk:adjust-android:5.0.1'
-    implementation 'com.adobe.marketing.mobile:core:2.6.1'
+    implementation 'com.adobe.marketing.mobile:core:3.2.0'
 }
 
 // init
 def libGroupId = 'com.adjust.adobeextension'
 def libArtifactId = 'adobeextension'
-def libVersion = '2.0.0'
+def libVersion = '3.0.0'
 def libName = 'Adjust Extension for Adobe Experience SDK'
 def libDesc = 'This is the Android Adobe Mobile Extension of Adjust.'
 def libUrl = 'https://github.com/adjust/android_adobe_extension'
