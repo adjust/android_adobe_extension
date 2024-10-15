@@ -82,5 +82,13 @@ public class MainApp extends Application {
         } catch (Exception e) {
 
         }
+
+        // Add global callback parameters.
+        AdjustAdobeExtension.addGlobalCallbackParameter("gc_foo", "gc_bar");
+        AdjustAdobeExtension.addGlobalCallbackParameter("gc_key", "gc_value");
+
+        // Add global partner parameters.
+        AdjustAdobeExtension.addGlobalPartnerParameter("gp_foo", "gp_bar");
+        AdjustAdobeExtension.addGlobalPartnerParameter("gp_key", "gp_value");
     }
 }
