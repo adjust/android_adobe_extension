@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.adjust.adobeextension.AdjustAdobeExtension;
 import com.adjust.adobeextension.AdjustAdobeExtensionConfig;
+import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAttribution;
 import com.adjust.sdk.OnAttributionChangedListener;
 import com.adjust.sdk.OnDeferredDeeplinkResponseListener;
@@ -84,11 +85,11 @@ public class MainApp extends Application {
         }
 
         // Add global callback parameters.
-        AdjustAdobeExtension.addGlobalCallbackParameter("gc_foo", "gc_bar");
-        AdjustAdobeExtension.addGlobalCallbackParameter("gc_key", "gc_value");
+        Adjust.addGlobalCallbackParameter("gc_foo", "gc_bar");
+        Adjust.addGlobalCallbackParameter("gc_key", "gc_value");
 
         // Add global partner parameters.
-        AdjustAdobeExtension.addGlobalPartnerParameter("gp_foo", "gp_bar");
-        AdjustAdobeExtension.addGlobalPartnerParameter("gp_key", "gp_value");
+        Adjust.addGlobalPartnerParameter("gp_foo", "gp_bar");
+        Adjust.addGlobalPartnerParameter("gp_key", "gp_value");
     }
 }
