@@ -31,6 +31,11 @@ public class AdjustAdobeExtensionConfig {
     private String externalDeviceId;
 
     /**
+     * A default tracker for preinstall attribution.
+     */
+    private String defaultTracker;
+
+    /**
      * Callback to listen for attribution change.
      */
     private OnAttributionChangedListener onAttributionChangedListener;
@@ -52,6 +57,13 @@ public class AdjustAdobeExtensionConfig {
      */
     public void setExternalDeviceId(String externalDeviceId) {
         this.externalDeviceId = externalDeviceId;
+    }
+
+    /**
+     * Method to set a default tracker for preinstall attribution.
+     */
+    public void setDefaultTracker(String defaultTracker) {
+        this.defaultTracker = defaultTracker;
     }
 
     /**
@@ -84,6 +96,13 @@ public class AdjustAdobeExtensionConfig {
      */
     public String getExternalDeviceId() {
         return externalDeviceId;
+    }
+
+    /**
+     * Method to get the default tracker set for preinstall attribution.
+     */
+    public String getDefaultTracker() {
+        return defaultTracker;
     }
 
     /**

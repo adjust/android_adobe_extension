@@ -218,6 +218,8 @@ class AdjustSdkApiHandler {
 
         adjustConfig.setExternalDeviceId(adjustAdobeExtensionConfig.getExternalDeviceId());
 
+        adjustConfig.setDefaultTracker(adjustAdobeExtensionConfig.getDefaultTracker());
+
         adjustConfig.setOnAttributionChangedListener(new OnAttributionChangedListener() {
             @Override
             public
