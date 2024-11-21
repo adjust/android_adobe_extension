@@ -8,6 +8,8 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.adjust.adobeextension.AdjustAdobeExtension;
+import com.adjust.sdk.Adjust;
+import com.adjust.sdk.AdjustDeeplink;
 import com.adobe.marketing.mobile.MobileCore;
 
 import java.util.HashMap;
@@ -23,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Uri data = intent.getData();
-        AdjustAdobeExtension.openUrl(data, getApplicationContext());
+        AdjustDeeplink adjustDeeplink = new AdjustDeeplink(data);
+        Adjust.processDeeplink(adjustDeeplink, getApplicationContext());
     }
 
     public void trackSimpleEvent(View view) {

@@ -2,7 +2,7 @@ package com.adjust.adobeextension;
 
 import com.adjust.sdk.AdjustConfig;
 import com.adjust.sdk.OnAttributionChangedListener;
-import com.adjust.sdk.OnDeeplinkResponseListener;
+import com.adjust.sdk.OnDeferredDeeplinkResponseListener;
 
 /**
  * Class for Adjust Adobe Extension Config.
@@ -26,6 +26,16 @@ public class AdjustAdobeExtensionConfig {
     private final String environment;
 
     /**
+     * An external identifier for a device or user.
+     */
+    private String externalDeviceId;
+
+    /**
+     * A default tracker for preinstall attribution.
+     */
+    private String defaultTracker;
+
+    /**
      * Callback to listen for attribution change.
      */
     private OnAttributionChangedListener onAttributionChangedListener;
@@ -33,13 +43,27 @@ public class AdjustAdobeExtensionConfig {
     /**
      * Callback to listen for deeplink response.
      */
-    private OnDeeplinkResponseListener onDeeplinkResponseListener;
+    private OnDeferredDeeplinkResponseListener onDeferredDeeplinkResponseListener;
 
     /**
      * Primary constructor.
      */
     public AdjustAdobeExtensionConfig(final String environment) {
         this.environment = environment;
+    }
+
+    /**
+     * Method to set an external identifier for a device or user.
+     */
+    public void setExternalDeviceId(String externalDeviceId) {
+        this.externalDeviceId = externalDeviceId;
+    }
+
+    /**
+     * Method to set a default tracker for preinstall attribution.
+     */
+    public void setDefaultTracker(String defaultTracker) {
+        this.defaultTracker = defaultTracker;
     }
 
     /**
@@ -54,10 +78,10 @@ public class AdjustAdobeExtensionConfig {
     /**
      * Method to set callback for deeplink response.
      */
-    public void setOnDeeplinkResponseListener(
-            final OnDeeplinkResponseListener onDeeplinkResponseListener)
+    public void setOnDeferredDeeplinkResponseListener(
+            final OnDeferredDeeplinkResponseListener onDeferredDeeplinkResponseListener)
     {
-        this.onDeeplinkResponseListener = onDeeplinkResponseListener;
+        this.onDeferredDeeplinkResponseListener = onDeferredDeeplinkResponseListener;
     }
 
     /**
@@ -65,6 +89,20 @@ public class AdjustAdobeExtensionConfig {
      */
     public String getEnvironment() {
         return environment;
+    }
+
+    /**
+     * Method to get the external identifier set for a device or user.
+     */
+    public String getExternalDeviceId() {
+        return externalDeviceId;
+    }
+
+    /**
+     * Method to get the default tracker set for preinstall attribution.
+     */
+    public String getDefaultTracker() {
+        return defaultTracker;
     }
 
     /**
@@ -77,7 +115,7 @@ public class AdjustAdobeExtensionConfig {
     /**
      * Method to get deeplink response callback listener
      */
-    public OnDeeplinkResponseListener getOnDeeplinkResponseListener() {
-        return onDeeplinkResponseListener;
+    public OnDeferredDeeplinkResponseListener getOnDeferredDeeplinkResponseListener() {
+        return onDeferredDeeplinkResponseListener;
     }
 }

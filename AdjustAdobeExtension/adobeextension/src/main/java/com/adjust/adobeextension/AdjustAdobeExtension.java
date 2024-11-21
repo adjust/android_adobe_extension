@@ -2,10 +2,6 @@ package com.adjust.adobeextension;
 
 import static com.adjust.adobeextension.AdjustAdobeExtensionConstants.LOG_EXTENSION;
 
-import android.content.Context;
-import android.net.Uri;
-
-import com.adjust.sdk.Adjust;
 import com.adobe.marketing.mobile.services.Log;
 
 /**
@@ -59,19 +55,7 @@ public class AdjustAdobeExtension {
         Log.debug(LOG_EXTENSION, LOG_SOURCE, "Adjust Adobe Extension initialized");
     }
 
-    /**
-     * Method used to process deep link.
-     *
-     * @param url Deep link URL to process
-     * @param context Application context
-     */
-    public static void openUrl(Uri url, Context context) {
-        // Pass deep link to Adjust in order to potentially reattribute user.
-        Log.debug(LOG_EXTENSION, LOG_SOURCE, "openUrl: " + url);
-        Adjust.appWillOpenUrl(url, context);
-    }
-
-    /**
+/**
      * Method used to get Adjust Adobe Extension Config.
      * @return AdjustAdobeExtensionConfig config to initialize Adjust Sdk
      */

@@ -1,3 +1,14 @@
+### Version 3.0.0 (21st November 2024)
+
+We're excited to release our new major Android Adobe Extension version (v3). Among many internal improvements, our spoofing protection solution is now included out of the box, reinforcing our commitment to accurate, actionable, and fraud-free data.
+
+To try out Android Adobe extension v3 in your app, you can follow our new v2 to v3 [migration guide](https://dev.adjust.com/en/sdk/migration/adobe-extension/android).
+
+#### Native Android SDK
+- [Android@v5.0.1](https://github.com/adjust/android_sdk/tree/v5.0.1)
+
+---
+
 ### Version 2.0.0 (30th January 2024)
 ### Added
 - Added support for the latest Adobe Experience Platform Core SDK version 2.0 and above.

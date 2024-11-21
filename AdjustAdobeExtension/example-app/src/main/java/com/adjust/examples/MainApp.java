@@ -6,9 +6,10 @@ import android.util.Log;
 
 import com.adjust.adobeextension.AdjustAdobeExtension;
 import com.adjust.adobeextension.AdjustAdobeExtensionConfig;
+import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAttribution;
 import com.adjust.sdk.OnAttributionChangedListener;
-import com.adjust.sdk.OnDeeplinkResponseListener;
+import com.adjust.sdk.OnDeferredDeeplinkResponseListener;
 import com.adobe.marketing.mobile.AdobeCallback;
 import com.adobe.marketing.mobile.Extension;
 import com.adobe.marketing.mobile.LoggingMode;
@@ -67,11 +68,11 @@ public class MainApp extends Application {
             });
 
             // Evaluate deferred deep link to be launched.
-            config.setOnDeeplinkResponseListener(new OnDeeplinkResponseListener() {
+            config.setOnDeferredDeeplinkResponseListener(new OnDeferredDeeplinkResponseListener() {
                 @Override
-                public boolean launchReceivedDeeplink(Uri deeplink) {
+                public boolean launchReceivedDeeplink(Uri uri) {
                     Log.d("example", "Deferred deep link callback called!");
-                    Log.d("example", "Deep link URL: " + deeplink);
+                    Log.d("example", "Deep link URL: " + uri);
 
                     return true;
                 }
@@ -82,5 +83,13 @@ public class MainApp extends Application {
         } catch (Exception e) {
 
         }
+
+        // Add global callback parameters.
+        Adjust.addGlobalCallbackParameter("gc_foo", "gc_bar");
+        Adjust.addGlobalCallbackParameter("gc_key", "gc_value");
+
+        // Add global partner parameters.
+        Adjust.addGlobalPartnerParameter("gp_foo", "gp_bar");
+        Adjust.addGlobalPartnerParameter("gp_key", "gp_value");
     }
 }
