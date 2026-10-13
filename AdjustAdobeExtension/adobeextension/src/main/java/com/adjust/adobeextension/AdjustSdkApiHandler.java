@@ -71,7 +71,7 @@ class AdjustSdkApiHandler {
             return;
         }
 
-        Application application = MobileCore.getApplication();
+        application = MobileCore.getApplication();
         if (application == null) {
             Log.error(LOG_EXTENSION, LOG_SOURCE,"Cannot initialise SDK, application object is null");
             return;
