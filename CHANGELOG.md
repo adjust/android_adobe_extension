@@ -1,3 +1,13 @@
+### Version 3.0.1 (16th October 2026)
+#### Changed
+- Updated native Android SDK dependency to version 5.8.0.
+- Updated gradle version.
+
+#### Native Android SDK
+- [Android@v5.8.0][android_sdk_v5.8.0]
+
+---
+
 ### Version 3.0.0 (21st November 2024)
 
 We're excited to release our new major Android Adobe Extension version (v3). Among many internal improvements, our spoofing protection solution is now included out of the box, reinforcing our commitment to accurate, actionable, and fraud-free data.
@@ -79,3 +89,4 @@ To try out Android Adobe extension v3 in your app, you can follow our new v2 to 
 [android_sdk_v4.29.1]: https://github.com/adjust/android_sdk/tree/v4.29.1
 [android_sdk_v4.30.1]: https://github.com/adjust/android_sdk/tree/v4.30.1
 [android_sdk_v4.38.1]: https://github.com/adjust/android_sdk/tree/v4.38.1
+[android_sdk_v5.8.0]: https://github.com/adjust/android_sdk/tree/v5.8.0
