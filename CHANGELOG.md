@@ -1,6 +1,7 @@
 ### Version 3.0.1 (16th October 2026)
 #### Changed
 - Updated native Android SDK dependency to version 5.8.0.
+- Updated the Adjust Signature library version to 5.0.0.
 - Updated gradle version.
 
 #### Native Android SDK
