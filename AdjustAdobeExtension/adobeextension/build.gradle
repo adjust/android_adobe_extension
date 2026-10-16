@@ -4,13 +4,16 @@ apply plugin: 'signing'
 
 android {
     namespace 'com.adjust.adobeextension'
-    compileSdk 35
+    compileSdk 37
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 35
 
+        targetSdkVersion 37
         consumerProguardFiles "consumer-rules.pro"
+        aarMetadata {
+            minCompileSdk = 1
+        }
     }
 
     buildTypes {
@@ -22,15 +25,15 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.test.ext:junit:1.2.1'
-    implementation 'com.adjust.sdk:adjust-android:5.0.1'
-    implementation 'com.adobe.marketing.mobile:core:3.2.0'
+    implementation 'androidx.test.ext:junit:1.3.0'
+    implementation 'com.adjust.sdk:adjust-android:5.8.0'
+    implementation 'com.adobe.marketing.mobile:core:3.10.0'
 }
 
 // init
 def libGroupId = 'com.adjust.adobeextension'
 def libArtifactId = 'adobeextension'
-def libVersion = '3.0.0'
+def libVersion = '3.0.1'
 def libName = 'Adjust Extension for Adobe Experience SDK'
 def libDesc = 'This is the Android Adobe Mobile Extension of Adjust.'
 def libUrl = 'https://github.com/adjust/android_adobe_extension'
@@ -106,11 +109,17 @@ publishing {
 
     repositories {
         maven {
-            name = "mavencentral"
-            url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-            credentials {
-                username sonatypeUsername
-                password sonatypePassword
+            if (libVersion.toString().contains('SNAPSHOT')) {
+                println "Using Maven SNAPSHOT repository for publishing"
+                url "https://central.sonatype.com/repository/maven-snapshots/"
+            } else {
+                url "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2"
+            }
+            if (project.hasProperty("sonatypeUsername")) {
+                credentials {
+                    username sonatypeUsername
+                    password sonatypePassword
+                }
             }
         }
     }
